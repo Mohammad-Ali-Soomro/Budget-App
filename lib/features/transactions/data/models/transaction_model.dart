@@ -14,6 +14,51 @@ enum TransactionType {
 
 @HiveType(typeId: 2)
 class TransactionModel extends HiveObject {
+
+  TransactionModel({
+    required this.id,
+    required this.amount,
+    required this.description,
+    required this.type,
+    required this.categoryId,
+    required this.accountId,
+    this.toAccountId,
+    required this.date,
+    required this.createdAt,
+    this.updatedAt,
+    this.notes,
+    this.imagePath,
+    this.metadata,
+    this.isRecurring = false,
+    this.recurringId,
+    this.location,
+    this.tags,
+  });
+
+  factory TransactionModel.fromJson(Map<String, dynamic> json) {
+    return TransactionModel(
+      id: json['id'],
+      amount: json['amount'].toDouble(),
+      description: json['description'],
+      type: TransactionType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => TransactionType.expense,
+      ),
+      categoryId: json['categoryId'],
+      accountId: json['accountId'],
+      toAccountId: json['toAccountId'],
+      date: DateTime.parse(json['date']),
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      notes: json['notes'],
+      imagePath: json['imagePath'],
+      metadata: json['metadata'],
+      isRecurring: json['isRecurring'] ?? false,
+      recurringId: json['recurringId'],
+      location: json['location'],
+      tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
+    );
+  }
   @HiveField(0)
   final String id;
 
@@ -64,26 +109,6 @@ class TransactionModel extends HiveObject {
 
   @HiveField(16)
   final List<String>? tags;
-
-  TransactionModel({
-    required this.id,
-    required this.amount,
-    required this.description,
-    required this.type,
-    required this.categoryId,
-    required this.accountId,
-    this.toAccountId,
-    required this.date,
-    required this.createdAt,
-    this.updatedAt,
-    this.notes,
-    this.imagePath,
-    this.metadata,
-    this.isRecurring = false,
-    this.recurringId,
-    this.location,
-    this.tags,
-  });
 
   TransactionModel copyWith({
     String? id,
@@ -145,31 +170,6 @@ class TransactionModel extends HiveObject {
       'location': location,
       'tags': tags,
     };
-  }
-
-  factory TransactionModel.fromJson(Map<String, dynamic> json) {
-    return TransactionModel(
-      id: json['id'],
-      amount: json['amount'].toDouble(),
-      description: json['description'],
-      type: TransactionType.values.firstWhere(
-        (e) => e.name == json['type'],
-        orElse: () => TransactionType.expense,
-      ),
-      categoryId: json['categoryId'],
-      accountId: json['accountId'],
-      toAccountId: json['toAccountId'],
-      date: DateTime.parse(json['date']),
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      notes: json['notes'],
-      imagePath: json['imagePath'],
-      metadata: json['metadata'],
-      isRecurring: json['isRecurring'] ?? false,
-      recurringId: json['recurringId'],
-      location: json['location'],
-      tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
-    );
   }
 
   // Helper methods

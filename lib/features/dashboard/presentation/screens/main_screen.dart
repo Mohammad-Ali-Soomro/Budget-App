@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../../../../core/providers/app_providers.dart';
 import '../../../../core/config/theme_config.dart';
-import 'dashboard_screen.dart';
-import '../../../transactions/presentation/screens/transactions_screen.dart';
+import '../../../../core/providers/app_providers.dart';
 import '../../../budgets/presentation/screens/budgets_screen.dart';
 import '../../../goals/presentation/screens/goals_screen.dart';
 import '../../../settings/presentation/screens/settings_screen.dart';
 import '../../../transactions/presentation/screens/add_transaction_screen.dart';
+import '../../../transactions/presentation/screens/transactions_screen.dart';
+import 'dashboard_screen.dart';
 
 class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});

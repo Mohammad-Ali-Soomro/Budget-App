@@ -223,7 +223,7 @@ class DashboardScreen extends ConsumerWidget {
       'Try the 50/30/20 rule: 50% for needs, 30% for wants, and 20% for savings.',
       'Track your expenses daily to identify spending patterns and areas for improvement.',
       'Set up automatic transfers to your savings account to build wealth consistently.',
-      'Review your subscriptions monthly and cancel those you don\'t actively use.',
+      "Review your subscriptions monthly and cancel those you don't actively use.",
       'Consider using cash for discretionary spending to avoid overspending.',
       'Build an emergency fund covering 3-6 months of your essential expenses.',
     ];

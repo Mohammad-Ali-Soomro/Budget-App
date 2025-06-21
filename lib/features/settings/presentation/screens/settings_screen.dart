@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
-import '../../../../core/config/theme_config.dart';
 import '../../../../core/config/app_config.dart';
+import '../../../../core/config/theme_config.dart';
 import '../../../../core/providers/app_providers.dart';
 
 class SettingsScreen extends ConsumerWidget {

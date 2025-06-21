@@ -83,7 +83,7 @@ final activeBudgetsProvider = Provider<AsyncValue<List<BudgetModel>>>((ref) {
       budgetList.where((budget) => budget.isActive && !budget.isExpired).toList(),
     ),
     loading: () => const AsyncValue.loading(),
-    error: (error, stack) => AsyncValue.error(error, stack),
+    error: AsyncValue.error,
   );
 });
 
@@ -101,7 +101,7 @@ final currentMonthBudgetsProvider = Provider<AsyncValue<List<BudgetModel>>>((ref
       }).toList(),
     ),
     loading: () => const AsyncValue.loading(),
-    error: (error, stack) => AsyncValue.error(error, stack),
+    error: AsyncValue.error,
   );
 });
 
@@ -172,7 +172,7 @@ final budgetStatsProvider = Provider<AsyncValue<BudgetStats>>((ref) {
       ));
     },
     loading: () => const AsyncValue.loading(),
-    error: (error, stack) => AsyncValue.error(error, stack),
+    error: AsyncValue.error,
   );
 });
 
@@ -221,12 +221,6 @@ final deleteBudgetProvider = Provider<Future<void> Function(String)>((ref) {
 
 // Helper Classes
 class BudgetStats {
-  final double totalBudgeted;
-  final double totalSpent;
-  final double remaining;
-  final int exceededCount;
-  final int nearLimitCount;
-  final int totalBudgets;
 
   BudgetStats({
     required this.totalBudgeted,
@@ -236,6 +230,12 @@ class BudgetStats {
     required this.nearLimitCount,
     required this.totalBudgets,
   });
+  final double totalBudgeted;
+  final double totalSpent;
+  final double remaining;
+  final int exceededCount;
+  final int nearLimitCount;
+  final int totalBudgets;
 }
 
 // Helper function to create a new budget

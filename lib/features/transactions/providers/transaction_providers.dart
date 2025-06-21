@@ -68,7 +68,7 @@ final recentTransactionsProvider = Provider<AsyncValue<List<TransactionModel>>>(
       transactionList.take(10).toList(),
     ),
     loading: () => const AsyncValue.loading(),
-    error: (error, stack) => AsyncValue.error(error, stack),
+    error: AsyncValue.error,
   );
 });
 
@@ -119,7 +119,7 @@ final transactionsByAccountProvider = Provider.family<List<TransactionModel>, St
 // Monthly Expenses Provider
 final monthlyExpensesProvider = Provider<AsyncValue<double>>((ref) {
   final now = DateTime.now();
-  final startOfMonth = DateTime(now.year, now.month, 1);
+  final startOfMonth = DateTime(now.year, now.month);
   final endOfMonth = DateTime(now.year, now.month + 1, 0);
   
   final transactions = ref.watch(transactionsByDateRangeProvider(
@@ -136,7 +136,7 @@ final monthlyExpensesProvider = Provider<AsyncValue<double>>((ref) {
 // Monthly Income Provider
 final monthlyIncomeProvider = Provider<AsyncValue<double>>((ref) {
   final now = DateTime.now();
-  final startOfMonth = DateTime(now.year, now.month, 1);
+  final startOfMonth = DateTime(now.year, now.month);
   final endOfMonth = DateTime(now.year, now.month + 1, 0);
   
   final transactions = ref.watch(transactionsByDateRangeProvider(
@@ -203,7 +203,7 @@ final transactionStatsProvider = Provider<AsyncValue<TransactionStats>>((ref) {
       ));
     },
     loading: () => const AsyncValue.loading(),
-    error: (error, stack) => AsyncValue.error(error, stack),
+    error: AsyncValue.error,
   );
 });
 
@@ -230,18 +230,13 @@ final deleteTransactionProvider = Provider<Future<void> Function(String)>((ref) 
 
 // Helper Classes
 class DateRange {
-  final DateTime start;
-  final DateTime end;
 
   DateRange({required this.start, required this.end});
+  final DateTime start;
+  final DateTime end;
 }
 
 class TransactionStats {
-  final double totalIncome;
-  final double totalExpenses;
-  final double totalTransfers;
-  final double netIncome;
-  final int transactionCount;
 
   TransactionStats({
     required this.totalIncome,
@@ -250,6 +245,11 @@ class TransactionStats {
     required this.netIncome,
     required this.transactionCount,
   });
+  final double totalIncome;
+  final double totalExpenses;
+  final double totalTransfers;
+  final double netIncome;
+  final int transactionCount;
 }
 
 // Helper function to create a new transaction

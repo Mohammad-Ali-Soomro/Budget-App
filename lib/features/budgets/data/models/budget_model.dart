@@ -16,6 +16,47 @@ enum BudgetPeriod {
 
 @HiveType(typeId: 7)
 class BudgetModel extends HiveObject {
+
+  BudgetModel({
+    required this.id,
+    required this.name,
+    required this.categoryId,
+    required this.amount,
+    this.spent = 0.0,
+    required this.period,
+    required this.startDate,
+    required this.endDate,
+    this.isActive = true,
+    this.alertEnabled = true,
+    this.alertThreshold = 0.8, // 80% by default
+    required this.createdAt,
+    this.updatedAt,
+    this.description,
+    this.metadata,
+  });
+
+  factory BudgetModel.fromJson(Map<String, dynamic> json) {
+    return BudgetModel(
+      id: json['id'],
+      name: json['name'],
+      categoryId: json['categoryId'],
+      amount: json['amount'].toDouble(),
+      spent: json['spent']?.toDouble() ?? 0.0,
+      period: BudgetPeriod.values.firstWhere(
+        (e) => e.name == json['period'],
+        orElse: () => BudgetPeriod.monthly,
+      ),
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
+      isActive: json['isActive'] ?? true,
+      alertEnabled: json['alertEnabled'] ?? true,
+      alertThreshold: json['alertThreshold']?.toDouble() ?? 0.8,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      description: json['description'],
+      metadata: json['metadata'],
+    );
+  }
   @HiveField(0)
   final String id;
 
@@ -60,24 +101,6 @@ class BudgetModel extends HiveObject {
 
   @HiveField(14)
   final Map<String, dynamic>? metadata;
-
-  BudgetModel({
-    required this.id,
-    required this.name,
-    required this.categoryId,
-    required this.amount,
-    this.spent = 0.0,
-    required this.period,
-    required this.startDate,
-    required this.endDate,
-    this.isActive = true,
-    this.alertEnabled = true,
-    this.alertThreshold = 0.8, // 80% by default
-    required this.createdAt,
-    this.updatedAt,
-    this.description,
-    this.metadata,
-  });
 
   BudgetModel copyWith({
     String? id,
@@ -133,29 +156,6 @@ class BudgetModel extends HiveObject {
       'description': description,
       'metadata': metadata,
     };
-  }
-
-  factory BudgetModel.fromJson(Map<String, dynamic> json) {
-    return BudgetModel(
-      id: json['id'],
-      name: json['name'],
-      categoryId: json['categoryId'],
-      amount: json['amount'].toDouble(),
-      spent: json['spent']?.toDouble() ?? 0.0,
-      period: BudgetPeriod.values.firstWhere(
-        (e) => e.name == json['period'],
-        orElse: () => BudgetPeriod.monthly,
-      ),
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
-      isActive: json['isActive'] ?? true,
-      alertEnabled: json['alertEnabled'] ?? true,
-      alertThreshold: json['alertThreshold']?.toDouble() ?? 0.8,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      description: json['description'],
-      metadata: json['metadata'],
-    );
   }
 
   // Helper methods

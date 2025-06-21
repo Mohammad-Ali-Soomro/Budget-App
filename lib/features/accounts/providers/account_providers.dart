@@ -86,7 +86,7 @@ final activeAccountsProvider = Provider<AsyncValue<List<AccountModel>>>((ref) {
       accountList.where((account) => account.isActive).toList(),
     ),
     loading: () => const AsyncValue.loading(),
-    error: (error, stack) => AsyncValue.error(error, stack),
+    error: AsyncValue.error,
   );
 });
 

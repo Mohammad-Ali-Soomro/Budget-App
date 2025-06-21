@@ -137,11 +137,11 @@ final currencyProvider = StateNotifierProvider<CurrencyNotifier, String>((ref) {
 });
 
 class CurrencyNotifier extends StateNotifier<String> {
-  final Ref ref;
 
   CurrencyNotifier(this.ref) : super('PKR') {
     _loadCurrency();
   }
+  final Ref ref;
 
   Future<void> _loadCurrency() async {
     final user = ref.read(currentUserProvider);

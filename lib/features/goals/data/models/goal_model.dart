@@ -16,6 +16,53 @@ enum GoalStatus {
 
 @HiveType(typeId: 9)
 class GoalModel extends HiveObject {
+
+  GoalModel({
+    required this.id,
+    required this.name,
+    required this.description,
+    required this.targetAmount,
+    this.currentAmount = 0.0,
+    required this.targetDate,
+    this.status = GoalStatus.active,
+    this.categoryId,
+    this.accountId,
+    required this.createdAt,
+    this.updatedAt,
+    this.completedAt,
+    this.imagePath,
+    this.color,
+    this.icon,
+    this.monthlyTarget,
+    this.reminderEnabled = true,
+    this.metadata,
+  });
+
+  factory GoalModel.fromJson(Map<String, dynamic> json) {
+    return GoalModel(
+      id: json['id'],
+      name: json['name'],
+      description: json['description'],
+      targetAmount: json['targetAmount'].toDouble(),
+      currentAmount: json['currentAmount']?.toDouble() ?? 0.0,
+      targetDate: DateTime.parse(json['targetDate']),
+      status: GoalStatus.values.firstWhere(
+        (e) => e.name == json['status'],
+        orElse: () => GoalStatus.active,
+      ),
+      categoryId: json['categoryId'],
+      accountId: json['accountId'],
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt']) : null,
+      imagePath: json['imagePath'],
+      color: json['color'],
+      icon: json['icon'],
+      monthlyTarget: json['monthlyTarget']?.toDouble(),
+      reminderEnabled: json['reminderEnabled'] ?? true,
+      metadata: json['metadata'],
+    );
+  }
   @HiveField(0)
   final String id;
 
@@ -69,27 +116,6 @@ class GoalModel extends HiveObject {
 
   @HiveField(17)
   final Map<String, dynamic>? metadata;
-
-  GoalModel({
-    required this.id,
-    required this.name,
-    required this.description,
-    required this.targetAmount,
-    this.currentAmount = 0.0,
-    required this.targetDate,
-    this.status = GoalStatus.active,
-    this.categoryId,
-    this.accountId,
-    required this.createdAt,
-    this.updatedAt,
-    this.completedAt,
-    this.imagePath,
-    this.color,
-    this.icon,
-    this.monthlyTarget,
-    this.reminderEnabled = true,
-    this.metadata,
-  });
 
   GoalModel copyWith({
     String? id,
@@ -156,32 +182,6 @@ class GoalModel extends HiveObject {
     };
   }
 
-  factory GoalModel.fromJson(Map<String, dynamic> json) {
-    return GoalModel(
-      id: json['id'],
-      name: json['name'],
-      description: json['description'],
-      targetAmount: json['targetAmount'].toDouble(),
-      currentAmount: json['currentAmount']?.toDouble() ?? 0.0,
-      targetDate: DateTime.parse(json['targetDate']),
-      status: GoalStatus.values.firstWhere(
-        (e) => e.name == json['status'],
-        orElse: () => GoalStatus.active,
-      ),
-      categoryId: json['categoryId'],
-      accountId: json['accountId'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt']) : null,
-      imagePath: json['imagePath'],
-      color: json['color'],
-      icon: json['icon'],
-      monthlyTarget: json['monthlyTarget']?.toDouble(),
-      reminderEnabled: json['reminderEnabled'] ?? true,
-      metadata: json['metadata'],
-    );
-  }
-
   // Helper methods
   double get remaining => targetAmount - currentAmount;
   double get percentage => targetAmount > 0 ? (currentAmount / targetAmount).clamp(0.0, 1.0) : 0.0;
@@ -223,7 +223,7 @@ class GoalModel extends HiveObject {
   String get progressText {
     if (isCompleted) return 'Goal Achieved! 🎉';
     if (isOverdue) return 'Overdue';
-    if (daysRemaining <= 30) return '${daysRemaining} days left';
+    if (daysRemaining <= 30) return '$daysRemaining days left';
     return '${(daysRemaining / 30).ceil()} months left';
   }
 

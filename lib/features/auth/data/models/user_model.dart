@@ -4,6 +4,40 @@ part 'user_model.g.dart';
 
 @HiveType(typeId: 0)
 class UserModel extends HiveObject {
+
+  UserModel({
+    required this.id,
+    required this.name,
+    required this.email,
+    this.phoneNumber,
+    this.profileImagePath,
+    this.currency = 'PKR',
+    this.language = 'en',
+    this.isDarkMode = false,
+    this.isNotificationsEnabled = true,
+    this.isBiometricEnabled = false,
+    required this.createdAt,
+    this.updatedAt,
+    this.preferences,
+  });
+
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    return UserModel(
+      id: json['id'],
+      name: json['name'],
+      email: json['email'],
+      phoneNumber: json['phoneNumber'],
+      profileImagePath: json['profileImagePath'],
+      currency: json['currency'] ?? 'PKR',
+      language: json['language'] ?? 'en',
+      isDarkMode: json['isDarkMode'] ?? false,
+      isNotificationsEnabled: json['isNotificationsEnabled'] ?? true,
+      isBiometricEnabled: json['isBiometricEnabled'] ?? false,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      preferences: json['preferences'],
+    );
+  }
   @HiveField(0)
   final String id;
 
@@ -42,22 +76,6 @@ class UserModel extends HiveObject {
 
   @HiveField(12)
   final Map<String, dynamic>? preferences;
-
-  UserModel({
-    required this.id,
-    required this.name,
-    required this.email,
-    this.phoneNumber,
-    this.profileImagePath,
-    this.currency = 'PKR',
-    this.language = 'en',
-    this.isDarkMode = false,
-    this.isNotificationsEnabled = true,
-    this.isBiometricEnabled = false,
-    required this.createdAt,
-    this.updatedAt,
-    this.preferences,
-  });
 
   UserModel copyWith({
     String? id,
@@ -107,24 +125,6 @@ class UserModel extends HiveObject {
       'updatedAt': updatedAt?.toIso8601String(),
       'preferences': preferences,
     };
-  }
-
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    return UserModel(
-      id: json['id'],
-      name: json['name'],
-      email: json['email'],
-      phoneNumber: json['phoneNumber'],
-      profileImagePath: json['profileImagePath'],
-      currency: json['currency'] ?? 'PKR',
-      language: json['language'] ?? 'en',
-      isDarkMode: json['isDarkMode'] ?? false,
-      isNotificationsEnabled: json['isNotificationsEnabled'] ?? true,
-      isBiometricEnabled: json['isBiometricEnabled'] ?? false,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      preferences: json['preferences'],
-    );
   }
 
   @override

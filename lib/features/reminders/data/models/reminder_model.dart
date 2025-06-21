@@ -20,6 +20,51 @@ enum ReminderFrequency {
 
 @HiveType(typeId: 11)
 class ReminderModel extends HiveObject {
+
+  ReminderModel({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.amount,
+    required this.dueDate,
+    required this.frequency,
+    this.categoryId,
+    this.accountId,
+    this.isActive = true,
+    this.isPaid = false,
+    this.paidDate,
+    required this.createdAt,
+    this.updatedAt,
+    this.notificationId,
+    this.reminderDaysBefore = 3,
+    this.notes,
+    this.metadata,
+  });
+
+  factory ReminderModel.fromJson(Map<String, dynamic> json) {
+    return ReminderModel(
+      id: json['id'],
+      title: json['title'],
+      description: json['description'],
+      amount: json['amount'].toDouble(),
+      dueDate: DateTime.parse(json['dueDate']),
+      frequency: ReminderFrequency.values.firstWhere(
+        (e) => e.name == json['frequency'],
+        orElse: () => ReminderFrequency.monthly,
+      ),
+      categoryId: json['categoryId'],
+      accountId: json['accountId'],
+      isActive: json['isActive'] ?? true,
+      isPaid: json['isPaid'] ?? false,
+      paidDate: json['paidDate'] != null ? DateTime.parse(json['paidDate']) : null,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      notificationId: json['notificationId'],
+      reminderDaysBefore: json['reminderDaysBefore'] ?? 3,
+      notes: json['notes'],
+      metadata: json['metadata'],
+    );
+  }
   @HiveField(0)
   final String id;
 
@@ -70,26 +115,6 @@ class ReminderModel extends HiveObject {
 
   @HiveField(16)
   final Map<String, dynamic>? metadata;
-
-  ReminderModel({
-    required this.id,
-    required this.title,
-    required this.description,
-    required this.amount,
-    required this.dueDate,
-    required this.frequency,
-    this.categoryId,
-    this.accountId,
-    this.isActive = true,
-    this.isPaid = false,
-    this.paidDate,
-    required this.createdAt,
-    this.updatedAt,
-    this.notificationId,
-    this.reminderDaysBefore = 3,
-    this.notes,
-    this.metadata,
-  });
 
   ReminderModel copyWith({
     String? id,
@@ -151,31 +176,6 @@ class ReminderModel extends HiveObject {
       'notes': notes,
       'metadata': metadata,
     };
-  }
-
-  factory ReminderModel.fromJson(Map<String, dynamic> json) {
-    return ReminderModel(
-      id: json['id'],
-      title: json['title'],
-      description: json['description'],
-      amount: json['amount'].toDouble(),
-      dueDate: DateTime.parse(json['dueDate']),
-      frequency: ReminderFrequency.values.firstWhere(
-        (e) => e.name == json['frequency'],
-        orElse: () => ReminderFrequency.monthly,
-      ),
-      categoryId: json['categoryId'],
-      accountId: json['accountId'],
-      isActive: json['isActive'] ?? true,
-      isPaid: json['isPaid'] ?? false,
-      paidDate: json['paidDate'] != null ? DateTime.parse(json['paidDate']) : null,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      notificationId: json['notificationId'],
-      reminderDaysBefore: json['reminderDaysBefore'] ?? 3,
-      notes: json['notes'],
-      metadata: json['metadata'],
-    );
   }
 
   // Helper methods

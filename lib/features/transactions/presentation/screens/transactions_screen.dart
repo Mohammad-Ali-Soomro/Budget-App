@@ -119,11 +119,11 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
                                 },
                               );
                             },
-                            loading: () => _TransactionItemSkeleton(),
+                            loading: _TransactionItemSkeleton.new,
                             error: (_, __) => _TransactionItemSkeleton(),
                           );
                         },
-                        loading: () => _TransactionItemSkeleton(),
+                        loading: _TransactionItemSkeleton.new,
                         error: (_, __) => _TransactionItemSkeleton(),
                       );
                     },
@@ -251,10 +251,6 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 }
 
 class _TransactionItem extends StatelessWidget {
-  final dynamic transaction;
-  final dynamic category;
-  final dynamic account;
-  final VoidCallback onTap;
 
   const _TransactionItem({
     required this.transaction,
@@ -262,6 +258,10 @@ class _TransactionItem extends StatelessWidget {
     required this.account,
     required this.onTap,
   });
+  final dynamic transaction;
+  final dynamic category;
+  final dynamic account;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {

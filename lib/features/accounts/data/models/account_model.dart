@@ -20,6 +20,49 @@ enum AccountType {
 
 @HiveType(typeId: 5)
 class AccountModel extends HiveObject {
+
+  AccountModel({
+    required this.id,
+    required this.name,
+    required this.type,
+    required this.balance,
+    required this.currency,
+    this.description,
+    this.bankName,
+    this.accountNumber,
+    this.cardNumber,
+    this.isDefault = false,
+    this.isActive = true,
+    required this.createdAt,
+    this.updatedAt,
+    this.color,
+    this.icon,
+    this.metadata,
+  });
+
+  factory AccountModel.fromJson(Map<String, dynamic> json) {
+    return AccountModel(
+      id: json['id'],
+      name: json['name'],
+      type: AccountType.values.firstWhere(
+        (e) => e.name == json['type'],
+        orElse: () => AccountType.cash,
+      ),
+      balance: json['balance'].toDouble(),
+      currency: json['currency'],
+      description: json['description'],
+      bankName: json['bankName'],
+      accountNumber: json['accountNumber'],
+      cardNumber: json['cardNumber'],
+      isDefault: json['isDefault'] ?? false,
+      isActive: json['isActive'] ?? true,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      color: json['color'],
+      icon: json['icon'],
+      metadata: json['metadata'],
+    );
+  }
   @HiveField(0)
   final String id;
 
@@ -67,25 +110,6 @@ class AccountModel extends HiveObject {
 
   @HiveField(15)
   final Map<String, dynamic>? metadata;
-
-  AccountModel({
-    required this.id,
-    required this.name,
-    required this.type,
-    required this.balance,
-    required this.currency,
-    this.description,
-    this.bankName,
-    this.accountNumber,
-    this.cardNumber,
-    this.isDefault = false,
-    this.isActive = true,
-    required this.createdAt,
-    this.updatedAt,
-    this.color,
-    this.icon,
-    this.metadata,
-  });
 
   AccountModel copyWith({
     String? id,
@@ -144,30 +168,6 @@ class AccountModel extends HiveObject {
       'icon': icon,
       'metadata': metadata,
     };
-  }
-
-  factory AccountModel.fromJson(Map<String, dynamic> json) {
-    return AccountModel(
-      id: json['id'],
-      name: json['name'],
-      type: AccountType.values.firstWhere(
-        (e) => e.name == json['type'],
-        orElse: () => AccountType.cash,
-      ),
-      balance: json['balance'].toDouble(),
-      currency: json['currency'],
-      description: json['description'],
-      bankName: json['bankName'],
-      accountNumber: json['accountNumber'],
-      cardNumber: json['cardNumber'],
-      isDefault: json['isDefault'] ?? false,
-      isActive: json['isActive'] ?? true,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      color: json['color'],
-      icon: json['icon'],
-      metadata: json['metadata'],
-    );
   }
 
   // Helper methods

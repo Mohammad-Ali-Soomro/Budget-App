@@ -59,7 +59,7 @@ class RecentTransactions extends ConsumerWidget {
           }).toList(),
         );
       },
-      loading: () => _buildLoadingState(),
+      loading: _buildLoadingState,
       error: (error, stack) => _buildErrorState(context),
     );
   }
@@ -177,12 +177,6 @@ class RecentTransactions extends ConsumerWidget {
 }
 
 class _TransactionItem extends StatelessWidget {
-  final String icon;
-  final String title;
-  final String subtitle;
-  final String amount;
-  final bool isIncome;
-  final DateTime date;
 
   const _TransactionItem({
     required this.icon,
@@ -192,6 +186,12 @@ class _TransactionItem extends StatelessWidget {
     required this.isIncome,
     required this.date,
   });
+  final String icon;
+  final String title;
+  final String subtitle;
+  final String amount;
+  final bool isIncome;
+  final DateTime date;
 
   @override
   Widget build(BuildContext context) {

@@ -4,6 +4,38 @@ part 'category_model.g.dart';
 
 @HiveType(typeId: 3)
 class CategoryModel extends HiveObject {
+
+  CategoryModel({
+    required this.id,
+    required this.name,
+    required this.icon,
+    required this.color,
+    this.description,
+    this.parentId,
+    this.isDefault = false,
+    this.isActive = true,
+    required this.createdAt,
+    this.updatedAt,
+    this.budgetLimit,
+    this.metadata,
+  });
+
+  factory CategoryModel.fromJson(Map<String, dynamic> json) {
+    return CategoryModel(
+      id: json['id'],
+      name: json['name'],
+      icon: json['icon'],
+      color: json['color'],
+      description: json['description'],
+      parentId: json['parentId'],
+      isDefault: json['isDefault'] ?? false,
+      isActive: json['isActive'] ?? true,
+      createdAt: DateTime.parse(json['createdAt']),
+      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
+      budgetLimit: json['budgetLimit']?.toDouble(),
+      metadata: json['metadata'],
+    );
+  }
   @HiveField(0)
   final String id;
 
@@ -39,21 +71,6 @@ class CategoryModel extends HiveObject {
 
   @HiveField(11)
   final Map<String, dynamic>? metadata;
-
-  CategoryModel({
-    required this.id,
-    required this.name,
-    required this.icon,
-    required this.color,
-    this.description,
-    this.parentId,
-    this.isDefault = false,
-    this.isActive = true,
-    required this.createdAt,
-    this.updatedAt,
-    this.budgetLimit,
-    this.metadata,
-  });
 
   CategoryModel copyWith({
     String? id,
@@ -100,23 +117,6 @@ class CategoryModel extends HiveObject {
       'budgetLimit': budgetLimit,
       'metadata': metadata,
     };
-  }
-
-  factory CategoryModel.fromJson(Map<String, dynamic> json) {
-    return CategoryModel(
-      id: json['id'],
-      name: json['name'],
-      icon: json['icon'],
-      color: json['color'],
-      description: json['description'],
-      parentId: json['parentId'],
-      isDefault: json['isDefault'] ?? false,
-      isActive: json['isActive'] ?? true,
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
-      budgetLimit: json['budgetLimit']?.toDouble(),
-      metadata: json['metadata'],
-    );
   }
 
   // Helper methods

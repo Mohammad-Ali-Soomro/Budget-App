@@ -99,10 +99,6 @@ class QuickActions extends ConsumerWidget {
 }
 
 class _QuickActionButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Color color;
-  final VoidCallback onTap;
 
   const _QuickActionButton({
     required this.icon,
@@ -110,6 +106,10 @@ class _QuickActionButton extends StatelessWidget {
     required this.color,
     required this.onTap,
   });
+  final IconData icon;
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {

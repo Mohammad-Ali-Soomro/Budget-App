@@ -81,8 +81,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
       name: 'User',
       email: '',
       createdAt: DateTime.now(),
-      currency: 'PKR',
-      language: 'en',
     );
     
     // Sign in the user
@@ -256,10 +254,6 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
 }
 
 class OnboardingPage {
-  final String title;
-  final String description;
-  final IconData icon;
-  final Color color;
 
   OnboardingPage({
     required this.title,
@@ -267,4 +261,8 @@ class OnboardingPage {
     required this.icon,
     required this.color,
   });
+  final String title;
+  final String description;
+  final IconData icon;
+  final Color color;
 }

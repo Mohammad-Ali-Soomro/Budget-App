@@ -87,7 +87,7 @@ class BudgetOverview extends ConsumerWidget {
                   }).toList(),
                 );
               },
-              loading: () => _buildLoadingState(),
+              loading: _buildLoadingState,
               error: (error, stack) => _buildErrorState(context),
             ),
           ],
@@ -201,13 +201,6 @@ class BudgetOverview extends ConsumerWidget {
 }
 
 class _BudgetItem extends StatelessWidget {
-  final String categoryName;
-  final String categoryIcon;
-  final double spent;
-  final double total;
-  final double percentage;
-  final bool isExceeded;
-  final bool isNearLimit;
 
   const _BudgetItem({
     required this.categoryName,
@@ -218,6 +211,13 @@ class _BudgetItem extends StatelessWidget {
     required this.isExceeded,
     required this.isNearLimit,
   });
+  final String categoryName;
+  final String categoryIcon;
+  final double spent;
+  final double total;
+  final double percentage;
+  final bool isExceeded;
+  final bool isNearLimit;
 
   @override
   Widget build(BuildContext context) {

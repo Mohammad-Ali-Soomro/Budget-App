@@ -9,12 +9,12 @@ import '../../../accounts/providers/account_providers.dart';
 import '../../../dashboard/presentation/widgets/quick_actions.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
-  final TransactionType? initialType;
   
   const AddTransactionScreen({
     super.key,
     this.initialType,
   });
+  final TransactionType? initialType;
 
   @override
   ConsumerState<AddTransactionScreen> createState() => _AddTransactionScreenState();
@@ -483,15 +483,15 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 }
 
 class _TypeButton extends StatelessWidget {
-  final TransactionType type;
-  final bool isSelected;
-  final VoidCallback onTap;
 
   const _TypeButton({
     required this.type,
     required this.isSelected,
     required this.onTap,
   });
+  final TransactionType type;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {

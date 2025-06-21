@@ -135,7 +135,7 @@ class ExpenseChart extends ConsumerWidget {
           ),
         );
       },
-      loading: () => _buildLoadingChart(),
+      loading: _buildLoadingChart,
       error: (error, stack) => _buildErrorChart(context),
     );
   }
