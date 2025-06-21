@@ -1,0 +1,332 @@
+{
+  "@@locale": "en",
+  "appName": "Budget Manager PK",
+  "@appName": {
+    "description": "The name of the application"
+  },
+  
+  "dashboard": "Dashboard",
+  "@dashboard": {
+    "description": "Dashboard tab label"
+  },
+  
+  "transactions": "Transactions",
+  "@transactions": {
+    "description": "Transactions tab label"
+  },
+  
+  "budgets": "Budgets",
+  "@budgets": {
+    "description": "Budgets tab label"
+  },
+  
+  "goals": "Goals",
+  "@goals": {
+    "description": "Goals tab label"
+  },
+  
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings tab label"
+  },
+  
+  "totalBalance": "Total Balance",
+  "@totalBalance": {
+    "description": "Total balance label"
+  },
+  
+  "quickActions": "Quick Actions",
+  "@quickActions": {
+    "description": "Quick actions section title"
+  },
+  
+  "addIncome": "Add Income",
+  "@addIncome": {
+    "description": "Add income button label"
+  },
+  
+  "addExpense": "Add Expense",
+  "@addExpense": {
+    "description": "Add expense button label"
+  },
+  
+  "setBudget": "Set Budget",
+  "@setBudget": {
+    "description": "Set budget button label"
+  },
+  
+  "addGoal": "Add Goal",
+  "@addGoal": {
+    "description": "Add goal button label"
+  },
+  
+  "recentTransactions": "Recent Transactions",
+  "@recentTransactions": {
+    "description": "Recent transactions section title"
+  },
+  
+  "spendingOverview": "Spending Overview",
+  "@spendingOverview": {
+    "description": "Spending overview chart title"
+  },
+  
+  "budgetOverview": "Budget Overview",
+  "@budgetOverview": {
+    "description": "Budget overview section title"
+  },
+  
+  "viewAll": "View All",
+  "@viewAll": {
+    "description": "View all button label"
+  },
+  
+  "noTransactionsYet": "No transactions yet",
+  "@noTransactionsYet": {
+    "description": "Empty state message for transactions"
+  },
+  
+  "startByAddingTransaction": "Start by adding your first transaction",
+  "@startByAddingTransaction": {
+    "description": "Empty state description for transactions"
+  },
+  
+  "noBudgetsSet": "No budgets set",
+  "@noBudgetsSet": {
+    "description": "Empty state message for budgets"
+  },
+  
+  "createFirstBudget": "Create your first budget to track spending",
+  "@createFirstBudget": {
+    "description": "Empty state description for budgets"
+  },
+  
+  "income": "Income",
+  "@income": {
+    "description": "Income transaction type"
+  },
+  
+  "expense": "Expense",
+  "@expense": {
+    "description": "Expense transaction type"
+  },
+  
+  "transfer": "Transfer",
+  "@transfer": {
+    "description": "Transfer transaction type"
+  },
+  
+  "amount": "Amount",
+  "@amount": {
+    "description": "Amount field label"
+  },
+  
+  "description": "Description",
+  "@description": {
+    "description": "Description field label"
+  },
+  
+  "category": "Category",
+  "@category": {
+    "description": "Category field label"
+  },
+  
+  "account": "Account",
+  "@account": {
+    "description": "Account field label"
+  },
+  
+  "date": "Date",
+  "@date": {
+    "description": "Date field label"
+  },
+  
+  "notes": "Notes",
+  "@notes": {
+    "description": "Notes field label"
+  },
+  
+  "save": "Save",
+  "@save": {
+    "description": "Save button label"
+  },
+  
+  "cancel": "Cancel",
+  "@cancel": {
+    "description": "Cancel button label"
+  },
+  
+  "delete": "Delete",
+  "@delete": {
+    "description": "Delete button label"
+  },
+  
+  "edit": "Edit",
+  "@edit": {
+    "description": "Edit button label"
+  },
+  
+  "cash": "Cash",
+  "@cash": {
+    "description": "Cash account type"
+  },
+  
+  "bank": "Bank",
+  "@bank": {
+    "description": "Bank account type"
+  },
+  
+  "mobile": "Mobile",
+  "@mobile": {
+    "description": "Mobile wallet account type"
+  },
+  
+  "creditCard": "Credit Card",
+  "@creditCard": {
+    "description": "Credit card account type"
+  },
+  
+  "today": "Today",
+  "@today": {
+    "description": "Today date label"
+  },
+  
+  "yesterday": "Yesterday",
+  "@yesterday": {
+    "description": "Yesterday date label"
+  },
+  
+  "thisWeek": "This Week",
+  "@thisWeek": {
+    "description": "This week date range"
+  },
+  
+  "thisMonth": "This Month",
+  "@thisMonth": {
+    "description": "This month date range"
+  },
+  
+  "thisYear": "This Year",
+  "@thisYear": {
+    "description": "This year date range"
+  },
+  
+  "weekly": "Weekly",
+  "@weekly": {
+    "description": "Weekly budget period"
+  },
+  
+  "monthly": "Monthly",
+  "@monthly": {
+    "description": "Monthly budget period"
+  },
+  
+  "quarterly": "Quarterly",
+  "@quarterly": {
+    "description": "Quarterly budget period"
+  },
+  
+  "yearly": "Yearly",
+  "@yearly": {
+    "description": "Yearly budget period"
+  },
+  
+  "active": "Active",
+  "@active": {
+    "description": "Active status"
+  },
+  
+  "completed": "Completed",
+  "@completed": {
+    "description": "Completed status"
+  },
+  
+  "paused": "Paused",
+  "@paused": {
+    "description": "Paused status"
+  },
+  
+  "cancelled": "Cancelled",
+  "@cancelled": {
+    "description": "Cancelled status"
+  },
+  
+  "exceeded": "Exceeded",
+  "@exceeded": {
+    "description": "Budget exceeded status"
+  },
+  
+  "nearLimit": "Near Limit",
+  "@nearLimit": {
+    "description": "Budget near limit status"
+  },
+  
+  "onTrack": "On Track",
+  "@onTrack": {
+    "description": "Budget on track status"
+  },
+  
+  "darkMode": "Dark Mode",
+  "@darkMode": {
+    "description": "Dark mode setting"
+  },
+  
+  "language": "Language",
+  "@language": {
+    "description": "Language setting"
+  },
+  
+  "currency": "Currency",
+  "@currency": {
+    "description": "Currency setting"
+  },
+  
+  "notifications": "Notifications",
+  "@notifications": {
+    "description": "Notifications setting"
+  },
+  
+  "backup": "Backup",
+  "@backup": {
+    "description": "Backup setting"
+  },
+  
+  "export": "Export",
+  "@export": {
+    "description": "Export data option"
+  },
+  
+  "import": "Import",
+  "@import": {
+    "description": "Import data option"
+  },
+  
+  "about": "About",
+  "@about": {
+    "description": "About section"
+  },
+  
+  "version": "Version",
+  "@version": {
+    "description": "App version label"
+  },
+  
+  "goodMorning": "Good Morning",
+  "@goodMorning": {
+    "description": "Morning greeting"
+  },
+  
+  "goodAfternoon": "Good Afternoon",
+  "@goodAfternoon": {
+    "description": "Afternoon greeting"
+  },
+  
+  "goodEvening": "Good Evening",
+  "@goodEvening": {
+    "description": "Evening greeting"
+  },
+  
+  "financialTip": "Financial Tip",
+  "@financialTip": {
+    "description": "Financial tip section title"
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "@@locale": "ur",
+  "appName": "بجٹ منیجر پاکستان",
+  
+  "dashboard": "ڈیش بورڈ",
+  "transactions": "لین دین",
+  "budgets": "بجٹ",
+  "goals": "اہداف",
+  "settings": "ترتیبات",
+  
+  "totalBalance": "کل بیلنس",
+  "quickActions": "فوری اعمال",
+  "addIncome": "آمدنی شامل کریں",
+  "addExpense": "خرچ شامل کریں",
+  "setBudget": "بجٹ مقرر کریں",
+  "addGoal": "ہدف شامل کریں",
+  
+  "recentTransactions": "حالیہ لین دین",
+  "spendingOverview": "خرچ کا جائزہ",
+  "budgetOverview": "بجٹ کا جائزہ",
+  "viewAll": "سب دیکھیں",
+  
+  "noTransactionsYet": "ابھی تک کوئی لین دین نہیں",
+  "startByAddingTransaction": "اپنا پہلا لین دین شامل کر کے شروع کریں",
+  "noBudgetsSet": "کوئی بجٹ مقرر نہیں",
+  "createFirstBudget": "خرچ کو ٹریک کرنے کے لیے اپنا پہلا بجٹ بنائیں",
+  
+  "income": "آمدنی",
+  "expense": "خرچ",
+  "transfer": "منتقلی",
+  
+  "amount": "رقم",
+  "description": "تفصیل",
+  "category": "قسم",
+  "account": "اکاؤنٹ",
+  "date": "تاریخ",
+  "notes": "نوٹس",
+  
+  "save": "محفوظ کریں",
+  "cancel": "منسوخ",
+  "delete": "حذف کریں",
+  "edit": "ترمیم",
+  
+  "cash": "نقد",
+  "bank": "بینک",
+  "mobile": "موبائل",
+  "creditCard": "کریڈٹ کارڈ",
+  
+  "today": "آج",
+  "yesterday": "کل",
+  "thisWeek": "اس ہفتے",
+  "thisMonth": "اس مہینے",
+  "thisYear": "اس سال",
+  
+  "weekly": "ہفتہ وار",
+  "monthly": "ماہانہ",
+  "quarterly": "سہ ماہی",
+  "yearly": "سالانہ",
+  
+  "active": "فعال",
+  "completed": "مکمل",
+  "paused": "رک گیا",
+  "cancelled": "منسوخ",
+  
+  "exceeded": "حد سے زیادہ",
+  "nearLimit": "حد کے قریب",
+  "onTrack": "ٹھیک ہے",
+  
+  "darkMode": "ڈارک موڈ",
+  "language": "زبان",
+  "currency": "کرنسی",
+  "notifications": "اطلاعات",
+  "backup": "بیک اپ",
+  "export": "برآمد",
+  "import": "درآمد",
+  "about": "کے بارے میں",
+  "version": "ورژن",
+  
+  "goodMorning": "صبح بخیر",
+  "goodAfternoon": "دوپہر بخیر",
+  "goodEvening": "شام بخیر",
+  
+  "financialTip": "مالی مشورہ"
+}
