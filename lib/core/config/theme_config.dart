@@ -35,12 +35,10 @@ class ThemeConfig {
       secondary: secondaryBlue,
       secondaryContainer: secondaryBlueLight,
       surface: surfaceLight,
-      background: backgroundLight,
       error: accentRed,
       onPrimary: Colors.white,
       onSecondary: Colors.white,
       onSurface: textPrimaryLight,
-      onBackground: textPrimaryLight,
       onError: Colors.white,
       brightness: Brightness.light,
     );
@@ -65,10 +63,10 @@ class ThemeConfig {
       ),
       
       // Card Theme
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData(
         elevation: 2,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
         color: Colors.white,
       ),
@@ -160,12 +158,10 @@ class ThemeConfig {
       secondary: secondaryBlueLight,
       secondaryContainer: secondaryBlueDark,
       surface: surfaceDark,
-      background: backgroundDark,
       error: accentRed,
       onPrimary: Colors.black,
       onSecondary: Colors.black,
       onSurface: textPrimaryDark,
-      onBackground: textPrimaryDark,
       onError: Colors.white,
       brightness: Brightness.dark,
     );
@@ -190,12 +186,12 @@ class ThemeConfig {
       ),
       
       // Card Theme
-      cardTheme: CardTheme(
+      cardTheme: const CardThemeData(
         elevation: 4,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.all(Radius.circular(12)),
         ),
-        color: const Color(0xFF2C2C2C),
+        color: Color(0xFF2C2C2C),
       ),
       
       // Elevated Button Theme
