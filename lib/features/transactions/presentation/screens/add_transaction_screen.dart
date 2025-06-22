@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/config/theme_config.dart';
+import '../../data/models/transaction_model.dart';
 import '../../../transactions/providers/transaction_providers.dart';
 import '../../../categories/providers/category_providers.dart';
 import '../../../accounts/providers/account_providers.dart';
-import '../../../dashboard/presentation/widgets/quick_actions.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   

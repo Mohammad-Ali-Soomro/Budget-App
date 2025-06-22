@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/config/theme_config.dart';
 import '../../../../core/providers/app_providers.dart';
+import '../../../transactions/data/models/transaction_model.dart';
 import '../../../transactions/presentation/screens/add_transaction_screen.dart';
 import '../../../budgets/presentation/screens/add_budget_screen.dart';
 import '../../../goals/presentation/screens/add_goal_screen.dart';
@@ -165,9 +166,4 @@ class _QuickActionButton extends StatelessWidget {
   }
 }
 
-// Enum for transaction types (to be used in AddTransactionScreen)
-enum TransactionType {
-  income,
-  expense,
-  transfer,
-}
+
