@@ -192,8 +192,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your phone number';
                                 }
-                                if (value.length < 10) {
-                                  return 'Please enter a valid phone number';
+                                // Pakistani phone number validation (03XX-XXXXXXX or +92-3XX-XXXXXXX)
+                                if (!RegExp(r'^(\+92|0)?3[0-9]{2}[0-9]{7}$').hasMatch(value.replaceAll(RegExp(r'[\s\-]'), ''))) {
+                                  return 'Please enter a valid Pakistani phone number';
                                 }
                                 return null;
                               },
@@ -224,8 +225,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your password';
                                 }
-                                if (value.length < 6) {
-                                  return 'Password must be at least 6 characters';
+                                if (value.length < 8) {
+                                  return 'Password must be at least 8 characters';
+                                }
+                                if (!RegExp(r'^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)').hasMatch(value)) {
+                                  return 'Password must contain uppercase, lowercase, and number';
                                 }
                                 return null;
                               },

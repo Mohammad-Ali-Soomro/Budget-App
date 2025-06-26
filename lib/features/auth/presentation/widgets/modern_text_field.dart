@@ -37,11 +37,13 @@ class _ModernTextFieldState extends State<ModernTextField>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
+  late FocusNode _focusNode;
   bool _isFocused = false;
 
   @override
   void initState() {
     super.initState();
+    _focusNode = FocusNode();
     _animationController = AnimationController(
       duration: const Duration(milliseconds: 200),
       vsync: this,
@@ -160,23 +162,20 @@ class _ModernTextFieldState extends State<ModernTextField>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Listen to focus changes
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final focusNode = Focus.of(context);
-      focusNode.addListener(() {
-        if (mounted) {
-          setState(() {
-            _isFocused = focusNode.hasFocus;
-          });
-          
-          if (_isFocused) {
-            _animationController.forward();
-          } else {
-            _animationController.reverse();
-          }
+    _focusNode.addListener(() {
+      if (mounted) {
+        setState(() {
+          _isFocused = _focusNode.hasFocus;
+        });
+
+        if (_isFocused) {
+          _animationController.forward();
+        } else {
+          _animationController.reverse();
         }
-      });
+      }
     });
   }
 }
