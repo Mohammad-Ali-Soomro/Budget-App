@@ -111,8 +111,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                 // Registration Form
                 FadeInUp(
-                  duration: const Duration(milliseconds: 800),
-                  delay: const Duration(milliseconds: 200),
                   child: GlassmorphicContainer(
                     width: double.infinity,
                     height: 650,
@@ -140,8 +138,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       padding: const EdgeInsets.all(24),
                       child: Form(
                         key: _formKey,
-                        child: Column(
-                          children: [
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
                             // Full Name Field
                             ModernTextField(
                               controller: _fullNameController,
@@ -350,20 +349,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                                 ),
                               ),
                             ],
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
 
-                const SizedBox(height: 32),
+                            const SizedBox(height: 32),
 
-                // Sign In Link
-                FadeInUp(
-                  duration: const Duration(milliseconds: 800),
-                  delay: const Duration(milliseconds: 400),
-                  child: Row(
+                            // Sign In Link
+                            FadeInUp(
+                              child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
@@ -388,6 +379,12 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
         ),
       ),
+    ),
+      ],
+    ),
+  ),
+),
+  ),
     );
   }
 }

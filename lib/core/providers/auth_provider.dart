@@ -74,7 +74,7 @@ class AuthController extends StateNotifier<AuthState> {
     required String phoneNumber,
   }) async {
     state = state.copyWith(isLoading: true, error: null);
-    
+
     try {
       final result = await AuthService.registerWithEmailPassword(
         email: email,
@@ -82,24 +82,29 @@ class AuthController extends StateNotifier<AuthState> {
         fullName: fullName,
         phoneNumber: phoneNumber,
       );
-      
-      if (result != null) {
+
+      // For local auth, result might be null but registration could still be successful
+      // Check if user is now logged in
+      final isLoggedIn = AuthService.isLoggedIn;
+
+      if (result != null || isLoggedIn) {
         state = state.copyWith(
           isLoading: false,
           isAuthenticated: true,
         );
         return true;
       }
-      
+
       state = state.copyWith(
         isLoading: false,
         error: 'Registration failed',
       );
       return false;
     } catch (e) {
+      String errorMessage = _getErrorMessage(e.toString());
       state = state.copyWith(
         isLoading: false,
-        error: e.toString(),
+        error: errorMessage,
       );
       return false;
     }
@@ -111,30 +116,35 @@ class AuthController extends StateNotifier<AuthState> {
     required String password,
   }) async {
     state = state.copyWith(isLoading: true, error: null);
-    
+
     try {
       final result = await AuthService.signInWithEmailPassword(
         email: email,
         password: password,
       );
-      
-      if (result != null) {
+
+      // For local auth, result might be null but sign-in could still be successful
+      // Check if user is now logged in
+      final isLoggedIn = AuthService.isLoggedIn;
+
+      if (result != null || isLoggedIn) {
         state = state.copyWith(
           isLoading: false,
           isAuthenticated: true,
         );
         return true;
       }
-      
+
       state = state.copyWith(
         isLoading: false,
         error: 'Sign in failed',
       );
       return false;
     } catch (e) {
+      String errorMessage = _getErrorMessage(e.toString());
       state = state.copyWith(
         isLoading: false,
-        error: e.toString(),
+        error: errorMessage,
       );
       return false;
     }
@@ -217,5 +227,35 @@ class AuthController extends StateNotifier<AuthState> {
   // Enable biometric authentication
   Future<bool> enableBiometricAuth() async {
     return await AuthService.enableBiometricAuth();
+  }
+
+  // Helper method to convert technical errors to user-friendly messages
+  String _getErrorMessage(String error) {
+    if (error.contains('An account already exists for this email')) {
+      return 'An account with this email already exists. Please try signing in instead.';
+    } else if (error.contains('No user found for this email')) {
+      return 'No account found with this email. Please check your email or create a new account.';
+    } else if (error.contains('Wrong password provided')) {
+      return 'Incorrect password. Please try again.';
+    } else if (error.contains('weak-password')) {
+      return 'The password is too weak. Please choose a stronger password.';
+    } else if (error.contains('email-already-in-use')) {
+      return 'An account with this email already exists. Please try signing in instead.';
+    } else if (error.contains('invalid-email')) {
+      return 'Please enter a valid email address.';
+    } else if (error.contains('user-not-found')) {
+      return 'No account found with this email. Please check your email or create a new account.';
+    } else if (error.contains('wrong-password')) {
+      return 'Incorrect password. Please try again.';
+    } else if (error.contains('too-many-requests')) {
+      return 'Too many failed attempts. Please try again later.';
+    } else if (error.contains('network-request-failed')) {
+      return 'Network error. Please check your internet connection and try again.';
+    } else if (error.contains('Exception:')) {
+      // Remove "Exception: " prefix for cleaner error messages
+      return error.replaceFirst('Exception: ', '');
+    } else {
+      return 'An unexpected error occurred. Please try again.';
+    }
   }
 }
