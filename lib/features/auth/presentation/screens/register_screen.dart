@@ -111,6 +111,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                 // Registration Form
                 FadeInUp(
+                  duration: const Duration(milliseconds: 1000),
                   child: GlassmorphicContainer(
                     width: double.infinity,
                     height: 650,
@@ -355,36 +356,37 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                             // Sign In Link
                             FadeInUp(
                               child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Already have an account? ",
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      TextButton(
-                        onPressed: () => context.pop(),
-                        child: Text(
-                          'Sign In',
-                          style: TextStyle(
-                            color: theme.colorScheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'Already have an account? ',
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
+                                  TextButton(
+                                    onPressed: () => context.pop(),
+                                    child: Text(
+                                      'Sign In',
+                                      style: TextStyle(
+                                        color: theme.colorScheme.primary,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ], // This closes the children array of inner Column
                         ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ), // This closes the GlassmorphicContainer
+                ), // This closes the first FadeInUp
+              ], // This closes the children array of the main Column
             ),
           ),
         ),
       ),
-    ),
-      ],
-    ),
-  ),
-),
-  ),
     );
   }
 }
