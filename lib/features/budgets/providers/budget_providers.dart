@@ -4,6 +4,7 @@ import 'package:uuid/uuid.dart';
 import '../../../core/services/hive_service.dart';
 import '../data/models/budget_model.dart';
 import '../../transactions/providers/transaction_providers.dart';
+import '../../transactions/data/models/transaction_model.dart';
 
 // Budgets Provider
 final budgetsProvider = StateNotifierProvider<BudgetsNotifier, AsyncValue<List<BudgetModel>>>((ref) {

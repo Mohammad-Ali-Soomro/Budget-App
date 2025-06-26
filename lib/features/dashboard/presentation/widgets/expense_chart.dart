@@ -57,7 +57,7 @@ class ExpenseChart extends ConsumerWidget {
                       final days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
                       if (value.toInt() >= 0 && value.toInt() < days.length) {
                         return SideTitleWidget(
-                          axisSide: meta.axisSide,
+                          meta: meta,
                           child: Text(days[value.toInt()], style: style),
                         );
                       }

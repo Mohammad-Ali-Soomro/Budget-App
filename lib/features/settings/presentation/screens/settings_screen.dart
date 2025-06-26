@@ -154,7 +154,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const Divider(height: 1),
                 ListTile(
-                  leading: Icon(PhosphorIcons.import()),
+                  leading: Icon(PhosphorIcons.downloadSimple()),
                   title: const Text('Import Data'),
                   subtitle: const Text('Import data from file'),
                   trailing: Icon(PhosphorIcons.caretRight()),

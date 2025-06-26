@@ -1,118 +1,126 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:go_router/go_router.dart';
 
-import '../../../../core/config/theme_config.dart';
-import '../../../../core/providers/app_providers.dart';
-import '../../../budgets/presentation/screens/budgets_screen.dart';
-import '../../../goals/presentation/screens/goals_screen.dart';
-import '../../../settings/presentation/screens/settings_screen.dart';
-import '../../../transactions/presentation/screens/add_transaction_screen.dart';
-import '../../../transactions/presentation/screens/transactions_screen.dart';
-import 'dashboard_screen.dart';
+class MainScreen extends ConsumerStatefulWidget {
+  final Widget child;
 
-class MainScreen extends ConsumerWidget {
-  const MainScreen({super.key});
+  const MainScreen({
+    super.key,
+    required this.child,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final currentIndex = ref.watch(navigationIndexProvider);
+  ConsumerState<MainScreen> createState() => _MainScreenState();
+}
+
+class _MainScreenState extends ConsumerState<MainScreen> {
+  int _selectedIndex = 0;
+
+  final List<NavigationItem> _navigationItems = [
+    NavigationItem(
+      icon: PhosphorIcons.house(),
+      activeIcon: PhosphorIcons.house(),
+      label: 'Dashboard',
+      route: '/dashboard',
+    ),
+    NavigationItem(
+      icon: PhosphorIcons.arrowsLeftRight(),
+      activeIcon: PhosphorIcons.arrowsLeftRight(),
+      label: 'Transactions',
+      route: '/transactions',
+    ),
+    NavigationItem(
+      icon: PhosphorIcons.chartPie(),
+      activeIcon: PhosphorIcons.chartPie(),
+      label: 'Budgets',
+      route: '/budgets',
+    ),
+    NavigationItem(
+      icon: PhosphorIcons.wallet(),
+      activeIcon: PhosphorIcons.wallet(),
+      label: 'Accounts',
+      route: '/accounts',
+    ),
+    NavigationItem(
+      icon: PhosphorIcons.gear(),
+      activeIcon: PhosphorIcons.gear(),
+      label: 'Settings',
+      route: '/settings',
+    ),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    context.go(_navigationItems[index].route);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final screens = [
-      const DashboardScreen(),
-      const TransactionsScreen(),
-      const BudgetsScreen(),
-      const GoalsScreen(),
-      const SettingsScreen(),
-    ];
-
     return Scaffold(
-      body: IndexedStack(
-        index: currentIndex,
-        children: screens,
-      ),
+      body: widget.child,
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
               offset: const Offset(0, -2),
             ),
           ],
         ),
         child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          onTap: (index) {
-            ref.read(navigationIndexProvider.notifier).setIndex(index);
-          },
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
           type: BottomNavigationBarType.fixed,
           backgroundColor: theme.colorScheme.surface,
-          selectedItemColor: ThemeConfig.primaryGreen,
-          unselectedItemColor: Colors.grey,
-          selectedLabelStyle: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w600,
-          ),
-          unselectedLabelStyle: const TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
-          ),
-          items: [
-            BottomNavigationBarItem(
-              icon: PhosphorIcon(
-                currentIndex == 0 ? PhosphorIcons.house(PhosphorIconsStyle.fill) : PhosphorIcons.house(),
-                size: 24,
+          selectedItemColor: theme.colorScheme.primary,
+          unselectedItemColor: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+          selectedFontSize: 12,
+          unselectedFontSize: 12,
+          elevation: 0,
+          items: _navigationItems.map((item) {
+            final isSelected = _navigationItems.indexOf(item) == _selectedIndex;
+            return BottomNavigationBarItem(
+              icon: Container(
+                padding: const EdgeInsets.symmetric(vertical: 4),
+                child: Icon(
+                  isSelected ? item.activeIcon : item.icon,
+                  size: 24,
+                ),
               ),
-              label: 'Dashboard',
-            ),
-            BottomNavigationBarItem(
-              icon: PhosphorIcon(
-                currentIndex == 1 ? PhosphorIcons.listBullets(PhosphorIconsStyle.fill) : PhosphorIcons.listBullets(),
-                size: 24,
-              ),
-              label: 'Transactions',
-            ),
-            BottomNavigationBarItem(
-              icon: PhosphorIcon(
-                currentIndex == 2 ? PhosphorIcons.chartPie(PhosphorIconsStyle.fill) : PhosphorIcons.chartPie(),
-                size: 24,
-              ),
-              label: 'Budgets',
-            ),
-            BottomNavigationBarItem(
-              icon: PhosphorIcon(
-                currentIndex == 3 ? PhosphorIcons.target(PhosphorIconsStyle.fill) : PhosphorIcons.target(),
-                size: 24,
-              ),
-              label: 'Goals',
-            ),
-            BottomNavigationBarItem(
-              icon: PhosphorIcon(
-                currentIndex == 4 ? PhosphorIcons.gear(PhosphorIconsStyle.fill) : PhosphorIcons.gear(),
-                size: 24,
-              ),
-              label: 'Settings',
-            ),
-          ],
+              label: item.label,
+            );
+          }).toList(),
         ),
       ),
-      floatingActionButton: currentIndex == 1 // Show FAB only on transactions screen
+      floatingActionButton: _selectedIndex == 1 // Show FAB only on transactions page
           ? FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => const AddTransactionScreen(),
-                  ),
-                );
-              },
-              backgroundColor: ThemeConfig.primaryGreen,
+              onPressed: () => context.push('/transactions/add'),
+              backgroundColor: theme.colorScheme.primary,
               foregroundColor: Colors.white,
-              child: const Icon(Icons.add, size: 28),
+              child: Icon(PhosphorIcons.plus()),
             )
           : null,
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
+}
+
+class NavigationItem {
+  final IconData icon;
+  final IconData activeIcon;
+  final String label;
+  final String route;
+
+  NavigationItem({
+    required this.icon,
+    required this.activeIcon,
+    required this.label,
+    required this.route,
+  });
 }
