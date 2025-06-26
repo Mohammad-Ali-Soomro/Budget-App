@@ -38,6 +38,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
   Future<void> _handleRegister() async {
     if (_formKey.currentState!.validate() && _acceptTerms) {
+      // Clear any previous errors
+      ref.read(authControllerProvider.notifier).clearError();
+
       final success = await ref.read(authControllerProvider.notifier).register(
         email: _emailController.text.trim(),
         password: _passwordController.text,
@@ -46,7 +49,20 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       );
 
       if (success && mounted) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Account created successfully!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        // Navigate to dashboard
         context.go('/dashboard');
+      } else if (mounted) {
+        // Error will be displayed in the UI automatically
+        // Optionally scroll to show the error
+        _scrollToError();
       }
     } else if (!_acceptTerms) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -56,6 +72,19 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         ),
       );
     }
+  }
+
+  void _scrollToError() {
+    // Small delay to ensure error is rendered
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
   }
 
   @override

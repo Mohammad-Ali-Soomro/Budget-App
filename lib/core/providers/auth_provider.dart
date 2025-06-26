@@ -251,31 +251,52 @@ class AuthController extends StateNotifier<AuthState> {
 
   // Helper method to convert technical errors to user-friendly messages
   String _getErrorMessage(String error) {
-    if (error.contains('An account already exists for this email')) {
+    // Clean up the error message first
+    String cleanError = error;
+    if (cleanError.startsWith('Exception: ')) {
+      cleanError = cleanError.replaceFirst('Exception: ', '');
+    }
+
+    // Firebase-specific errors
+    if (cleanError.contains('An account already exists for this email') ||
+        cleanError.contains('email-already-in-use')) {
       return 'An account with this email already exists. Please try signing in instead.';
-    } else if (error.contains('No user found for this email')) {
+    } else if (cleanError.contains('No user found for this email') ||
+               cleanError.contains('user-not-found')) {
       return 'No account found with this email. Please check your email or create a new account.';
-    } else if (error.contains('Wrong password provided')) {
+    } else if (cleanError.contains('Wrong password provided') ||
+               cleanError.contains('wrong-password')) {
       return 'Incorrect password. Please try again.';
-    } else if (error.contains('weak-password')) {
-      return 'The password is too weak. Please choose a stronger password.';
-    } else if (error.contains('email-already-in-use')) {
-      return 'An account with this email already exists. Please try signing in instead.';
-    } else if (error.contains('invalid-email')) {
+    } else if (cleanError.contains('weak-password')) {
+      return 'The password is too weak. Please choose a stronger password (at least 6 characters).';
+    } else if (cleanError.contains('invalid-email')) {
       return 'Please enter a valid email address.';
-    } else if (error.contains('user-not-found')) {
-      return 'No account found with this email. Please check your email or create a new account.';
-    } else if (error.contains('wrong-password')) {
-      return 'Incorrect password. Please try again.';
-    } else if (error.contains('too-many-requests')) {
+    } else if (cleanError.contains('too-many-requests')) {
       return 'Too many failed attempts. Please try again later.';
-    } else if (error.contains('network-request-failed')) {
+    } else if (cleanError.contains('network-request-failed')) {
       return 'Network error. Please check your internet connection and try again.';
-    } else if (error.contains('Exception:')) {
-      // Remove "Exception: " prefix for cleaner error messages
-      return error.replaceFirst('Exception: ', '');
-    } else {
-      return 'An unexpected error occurred. Please try again.';
+    }
+    // Local authentication errors
+    else if (cleanError.contains('All fields are required')) {
+      return 'Please fill in all required fields.';
+    } else if (cleanError.contains('Please enter a valid email address')) {
+      return 'Please enter a valid email address.';
+    } else if (cleanError.contains('Password must be at least 6 characters long')) {
+      return 'Password must be at least 6 characters long.';
+    } else if (cleanError.contains('Authentication data not found')) {
+      return 'Authentication data not found. Please register again.';
+    } else if (cleanError.contains('Email and password are required')) {
+      return 'Please enter both email and password.';
+    }
+    // Web-specific errors
+    else if (cleanError.contains('Firebase Auth not available')) {
+      return 'Authentication service is not available. Please try again later.';
+    } else if (cleanError.contains('Firebase not initialized')) {
+      return 'App is still loading. Please wait a moment and try again.';
+    }
+    // Generic fallback
+    else {
+      return cleanError.isNotEmpty ? cleanError : 'An unexpected error occurred. Please try again.';
     }
   }
 }

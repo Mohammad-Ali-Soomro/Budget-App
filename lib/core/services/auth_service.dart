@@ -26,8 +26,25 @@ class AuthService {
       if (Firebase.apps.isNotEmpty) {
         _auth ??= FirebaseAuth.instance;
         _firestore ??= FirebaseFirestore.instance;
-        _useLocalAuth = false;
-        debugPrint('Using Firebase authentication');
+
+        // Check if Firebase is properly configured
+        final app = Firebase.app();
+        final options = app.options;
+
+        // Validate Firebase configuration
+        if (options.projectId.contains('demo') ||
+            options.apiKey.contains('Demo') ||
+            options.projectId.isEmpty ||
+            options.apiKey.isEmpty) {
+          debugPrint('Firebase configuration contains demo/placeholder values');
+          debugPrint('Project ID: ${options.projectId}');
+          debugPrint('Using local authentication due to demo configuration');
+          _useLocalAuth = true;
+        } else {
+          _useLocalAuth = false;
+          debugPrint('Using Firebase authentication');
+          debugPrint('Project ID: ${options.projectId}');
+        }
       } else {
         _useLocalAuth = true;
         debugPrint('Firebase not initialized, using local authentication');
@@ -111,7 +128,7 @@ class AuthService {
 
     if (_useLocalAuth) {
       // Use local authentication with Hive
-      return await _registerLocalUser(
+      return _registerLocalUser(
         email: email,
         password: password,
         fullName: fullName,
@@ -161,7 +178,7 @@ class AuthService {
 
     if (_useLocalAuth) {
       // Use local authentication with Hive
-      return await _signInLocalUser(
+      return _signInLocalUser(
         email: email,
         password: password,
       );
@@ -282,7 +299,17 @@ class AuthService {
     // Clear stored credentials
     await _storage.delete(key: 'user_email');
     await _storage.delete(key: 'user_password');
-    await _storage.delete(key: 'user_password_hash');
+
+    // Clear all password hashes (for all users)
+    try {
+      final userBox = HiveService.userBox;
+      final allUsers = userBox.values.toList();
+      for (final user in allUsers) {
+        await _storage.delete(key: 'user_password_hash_${user.email}');
+      }
+    } catch (e) {
+      debugPrint('Error clearing password hashes: $e');
+    }
   }
 
   // Get user profile
@@ -419,7 +446,7 @@ class AuthService {
       final userBox = HiveService.userBox;
 
       // Check if user already exists
-      final existingUsers = userBox.values.where((user) => user?.email == email);
+      final existingUsers = userBox.values.where((user) => user.email == email);
       if (existingUsers.isNotEmpty) {
         throw Exception('An account already exists for this email.');
       }
@@ -436,9 +463,21 @@ class AuthService {
         createdAt: DateTime.now(),
       );
 
-      // Store user in Hive with email as key and also as current user
+      // Store user in Hive with email as key
       await userBox.put(email, user);
-      await userBox.put('current_user', user);
+
+      // Create a separate user object for current_user to avoid Hive key conflict
+      final currentUser = UserModel(
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      );
+
+      // Set as current user
+      await userBox.put('current_user', currentUser);
 
       // Store hashed password securely with email-specific key
       await _storage.write(key: 'user_password_hash_$email', value: hashedPassword);
@@ -470,27 +509,51 @@ class AuthService {
       // Find user by email
       final user = userBox.get(email);
       if (user == null) {
+        debugPrint('No user found for email: $email');
+        debugPrint('Available users: ${userBox.keys.toList()}');
         throw Exception('No user found for this email.');
       }
+
+      debugPrint('Found user for email: $email');
 
       // Verify password
       final hashedPassword = sha256.convert(utf8.encode(password)).toString();
       final storedHash = await _storage.read(key: 'user_password_hash_$email');
 
       if (storedHash == null) {
-        throw Exception('Authentication data not found. Please register again.');
-      }
-
-      if (storedHash != hashedPassword) {
-        throw Exception('Wrong password provided.');
+        // For backward compatibility, try to create the hash from the stored password
+        final storedPassword = await _storage.read(key: 'user_password');
+        if (storedPassword != null && storedPassword == password) {
+          // Password matches, update to use hashed storage
+          await _storage.write(key: 'user_password_hash_$email', value: hashedPassword);
+          debugPrint('Updated password storage to use hash for: $email');
+        } else {
+          // For new users or if no stored password, require re-registration
+          throw Exception('Authentication data not found. Please register again.');
+        }
+      } else {
+        // Verify against stored hash
+        if (storedHash != hashedPassword) {
+          throw Exception('Wrong password provided.');
+        }
       }
 
       // Store credentials for biometric auth
       await _storage.write(key: 'user_email', value: email);
       await _storage.write(key: 'user_password', value: password);
 
+      // Create a separate user object for current_user to avoid Hive key conflict
+      final currentUser = UserModel(
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      );
+
       // Set as current user
-      await userBox.put('current_user', user);
+      await userBox.put('current_user', currentUser);
 
       debugPrint('Local user signed in successfully: $email');
 

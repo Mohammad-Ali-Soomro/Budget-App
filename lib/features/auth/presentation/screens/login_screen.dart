@@ -32,21 +32,64 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
+      // Clear any previous errors
+      ref.read(authControllerProvider.notifier).clearError();
+
       final success = await ref.read(authControllerProvider.notifier).signIn(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
       if (success && mounted) {
+        // Show success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Welcome back!'),
+            backgroundColor: Colors.green,
+            duration: Duration(seconds: 2),
+          ),
+        );
+        // Navigate to dashboard
         context.go('/dashboard');
+      } else if (mounted) {
+        // Error will be displayed in the UI automatically
+        // Optionally scroll to show the error
+        _scrollToError();
       }
     }
   }
 
+  void _scrollToError() {
+    // Small delay to ensure error is rendered
+    Future.delayed(const Duration(milliseconds: 100), () {
+      if (mounted) {
+        Scrollable.ensureVisible(
+          context,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      }
+    });
+  }
+
   Future<void> _handleBiometricLogin() async {
+    // Clear any previous errors
+    ref.read(authControllerProvider.notifier).clearError();
+
     final success = await ref.read(authControllerProvider.notifier).signInWithBiometrics();
+
     if (success && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Biometric authentication successful!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
       context.go('/dashboard');
+    } else if (mounted) {
+      // Error will be displayed in the UI automatically
+      _scrollToError();
     }
   }
 
