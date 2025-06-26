@@ -18,58 +18,81 @@ class HiveService {
   static late Box<ReminderModel> _reminderBox;
 
   static Future<void> init() async {
-    await Hive.initFlutter();
+    try {
+      await Hive.initFlutter();
 
-    // Register adapters
-    if (!Hive.isAdapterRegistered(0)) {
-      Hive.registerAdapter(UserModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(1)) {
-      Hive.registerAdapter(TransactionTypeAdapter());
-    }
-    if (!Hive.isAdapterRegistered(2)) {
-      Hive.registerAdapter(TransactionModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(3)) {
-      Hive.registerAdapter(CategoryModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(4)) {
-      Hive.registerAdapter(AccountTypeAdapter());
-    }
-    if (!Hive.isAdapterRegistered(5)) {
-      Hive.registerAdapter(AccountModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(6)) {
-      Hive.registerAdapter(BudgetPeriodAdapter());
-    }
-    if (!Hive.isAdapterRegistered(7)) {
-      Hive.registerAdapter(BudgetModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(8)) {
-      Hive.registerAdapter(GoalStatusAdapter());
-    }
-    if (!Hive.isAdapterRegistered(9)) {
-      Hive.registerAdapter(GoalModelAdapter());
-    }
-    if (!Hive.isAdapterRegistered(10)) {
-      Hive.registerAdapter(ReminderFrequencyAdapter());
-    }
-    if (!Hive.isAdapterRegistered(11)) {
-      Hive.registerAdapter(ReminderModelAdapter());
-    }
+      // Register adapters with error handling
+      _registerAdapters();
 
-    // Open boxes
-    _settingsBox = await Hive.openBox('settings');
-    _userBox = await Hive.openBox<UserModel>('users');
-    _transactionBox = await Hive.openBox<TransactionModel>('transactions');
-    _categoryBox = await Hive.openBox<CategoryModel>('categories');
-    _accountBox = await Hive.openBox<AccountModel>('accounts');
-    _budgetBox = await Hive.openBox<BudgetModel>('budgets');
-    _goalBox = await Hive.openBox<GoalModel>('goals');
-    _reminderBox = await Hive.openBox<ReminderModel>('reminders');
+      // Open boxes with error handling
+      await _openBoxes();
 
-    // Initialize default data if needed
-    await _initializeDefaultData();
+      // Initialize default data if needed
+      await _initializeDefaultData();
+    } catch (e) {
+      print('Error initializing Hive: $e');
+      rethrow;
+    }
+  }
+
+  static void _registerAdapters() {
+    try {
+      if (!Hive.isAdapterRegistered(0)) {
+        Hive.registerAdapter(UserModelAdapter());
+      }
+      if (!Hive.isAdapterRegistered(1)) {
+        Hive.registerAdapter(TransactionTypeAdapter());
+      }
+      if (!Hive.isAdapterRegistered(2)) {
+        Hive.registerAdapter(TransactionModelAdapter());
+      }
+      if (!Hive.isAdapterRegistered(3)) {
+        Hive.registerAdapter(CategoryModelAdapter());
+      }
+      if (!Hive.isAdapterRegistered(4)) {
+        Hive.registerAdapter(AccountTypeAdapter());
+      }
+      if (!Hive.isAdapterRegistered(5)) {
+        Hive.registerAdapter(AccountModelAdapter());
+      }
+      if (!Hive.isAdapterRegistered(6)) {
+        Hive.registerAdapter(BudgetPeriodAdapter());
+      }
+      if (!Hive.isAdapterRegistered(7)) {
+        Hive.registerAdapter(BudgetModelAdapter());
+      }
+      if (!Hive.isAdapterRegistered(8)) {
+        Hive.registerAdapter(GoalStatusAdapter());
+      }
+      if (!Hive.isAdapterRegistered(9)) {
+        Hive.registerAdapter(GoalModelAdapter());
+      }
+      if (!Hive.isAdapterRegistered(10)) {
+        Hive.registerAdapter(ReminderFrequencyAdapter());
+      }
+      if (!Hive.isAdapterRegistered(11)) {
+        Hive.registerAdapter(ReminderModelAdapter());
+      }
+    } catch (e) {
+      print('Error registering Hive adapters: $e');
+      rethrow;
+    }
+  }
+
+  static Future<void> _openBoxes() async {
+    try {
+      _settingsBox = await Hive.openBox('settings');
+      _userBox = await Hive.openBox<UserModel>('users');
+      _transactionBox = await Hive.openBox<TransactionModel>('transactions');
+      _categoryBox = await Hive.openBox<CategoryModel>('categories');
+      _accountBox = await Hive.openBox<AccountModel>('accounts');
+      _budgetBox = await Hive.openBox<BudgetModel>('budgets');
+      _goalBox = await Hive.openBox<GoalModel>('goals');
+      _reminderBox = await Hive.openBox<ReminderModel>('reminders');
+    } catch (e) {
+      print('Error opening Hive boxes: $e');
+      rethrow;
+    }
   }
 
   // Getters for boxes

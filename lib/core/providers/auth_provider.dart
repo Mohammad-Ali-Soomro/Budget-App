@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_profile.dart';
 import '../services/auth_service.dart';
+import '../services/hive_service.dart';
+import '../../features/auth/data/models/user_model.dart';
 
 // Auth state provider
 final authStateProvider = StreamProvider<User?>((ref) {
@@ -16,6 +18,19 @@ final currentUserProvider = Provider<User?>((ref) {
     loading: () => null,
     error: (_, __) => null,
   );
+});
+
+// Local user provider for when Firebase User is not available
+final localUserProvider = Provider<UserModel?>((ref) {
+  try {
+    final userBox = HiveService.userBox;
+    if (userBox.containsKey('current_user')) {
+      return userBox.get('current_user');
+    }
+    return null;
+  } catch (e) {
+    return null;
+  }
 });
 
 // User profile provider
@@ -63,7 +78,12 @@ class AuthController extends StateNotifier<AuthState> {
   }
 
   void _checkAuthState() {
-    state = state.copyWith(isAuthenticated: AuthService.isLoggedIn);
+    try {
+      final isLoggedIn = AuthService.isLoggedIn;
+      state = state.copyWith(isAuthenticated: isLoggedIn);
+    } catch (e) {
+      state = state.copyWith(isAuthenticated: false, error: 'Failed to check auth state');
+    }
   }
 
   // Register

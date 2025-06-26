@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:crypto/crypto.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:uuid/uuid.dart';
@@ -26,10 +27,15 @@ class AuthService {
         _auth ??= FirebaseAuth.instance;
         _firestore ??= FirebaseFirestore.instance;
         _useLocalAuth = false;
+        debugPrint('Using Firebase authentication');
+      } else {
+        _useLocalAuth = true;
+        debugPrint('Firebase not initialized, using local authentication');
       }
     } catch (e) {
       // Firebase not available, use local authentication
       _useLocalAuth = true;
+      debugPrint('Firebase error, falling back to local authentication: $e');
     }
   }
 
@@ -64,7 +70,12 @@ class AuthService {
   static Stream<User?> _localAuthStateChanges() async* {
     final userBox = HiveService.userBox;
     if (userBox.containsKey('current_user')) {
-      yield _createMockUser(userBox.get('current_user'));
+      final userModel = userBox.get('current_user');
+      if (userModel != null) {
+        yield _createMockUser(userModel);
+      } else {
+        yield null;
+      }
     } else {
       yield null;
     }
@@ -72,14 +83,20 @@ class AuthService {
 
   // Check if local user is logged in
   static bool _isLocalUserLoggedIn() {
-    final userBox = HiveService.userBox;
-    return userBox.containsKey('current_user');
+    try {
+      final userBox = HiveService.userBox;
+      return userBox.containsKey('current_user') && userBox.get('current_user') != null;
+    } catch (e) {
+      return false;
+    }
   }
 
   // Create mock Firebase User for local authentication
   static User? _createMockUser(UserModel? userModel) {
     if (userModel == null) return null;
-    // Return null for now - we'll handle this in the auth controller
+    // For local authentication, we'll use a mock implementation
+    // The actual User object is complex, so we'll handle this differently
+    // by checking the local auth state directly in the auth controller
     return null;
   }
 
@@ -386,10 +403,23 @@ class AuthService {
     required String phoneNumber,
   }) async {
     try {
+      // Validate input
+      if (email.isEmpty || password.isEmpty || fullName.isEmpty) {
+        throw Exception('All fields are required');
+      }
+
+      if (!email.contains('@')) {
+        throw Exception('Please enter a valid email address');
+      }
+
+      if (password.length < 6) {
+        throw Exception('Password must be at least 6 characters long');
+      }
+
       final userBox = HiveService.userBox;
 
       // Check if user already exists
-      final existingUsers = userBox.values.where((user) => user.email == email);
+      final existingUsers = userBox.values.where((user) => user?.email == email);
       if (existingUsers.isNotEmpty) {
         throw Exception('An account already exists for this email.');
       }
@@ -415,9 +445,12 @@ class AuthService {
       await _storage.write(key: 'user_email', value: email);
       await _storage.write(key: 'user_password', value: password);
 
+      debugPrint('Local user registered successfully: $email');
+
       // Return a mock UserCredential for compatibility
       return _createMockUserCredential(user);
     } catch (e) {
+      debugPrint('Local registration error: $e');
       throw Exception(e.toString());
     }
   }
@@ -427,6 +460,11 @@ class AuthService {
     required String password,
   }) async {
     try {
+      // Validate input
+      if (email.isEmpty || password.isEmpty) {
+        throw Exception('Email and password are required');
+      }
+
       final userBox = HiveService.userBox;
 
       // Find user by email
@@ -439,6 +477,10 @@ class AuthService {
       final hashedPassword = sha256.convert(utf8.encode(password)).toString();
       final storedHash = await _storage.read(key: 'user_password_hash_$email');
 
+      if (storedHash == null) {
+        throw Exception('Authentication data not found. Please register again.');
+      }
+
       if (storedHash != hashedPassword) {
         throw Exception('Wrong password provided.');
       }
@@ -450,16 +492,21 @@ class AuthService {
       // Set as current user
       await userBox.put('current_user', user);
 
+      debugPrint('Local user signed in successfully: $email');
+
       // Return a mock UserCredential for compatibility
       return _createMockUserCredential(user);
     } catch (e) {
+      debugPrint('Local sign-in error: $e');
       throw Exception(e.toString());
     }
   }
 
   static UserCredential? _createMockUserCredential(UserModel user) {
-    // This is a simplified mock for local authentication
-    // In a real implementation, you might want to create a proper mock
-    return null; // The calling code will check for null and handle accordingly
+    // For local authentication, we return null but the calling code
+    // will check AuthService.isLoggedIn to verify success
+    // This is because creating a proper mock UserCredential is complex
+    // and not necessary for local authentication
+    return null;
   }
 }

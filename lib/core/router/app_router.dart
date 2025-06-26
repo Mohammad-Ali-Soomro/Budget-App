@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
+import '../services/auth_service.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
@@ -17,15 +18,21 @@ import '../../features/settings/presentation/screens/settings_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
-  
+  final authController = ref.watch(authControllerProvider);
+
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {
-      final isLoggedIn = authState.when(
+      // Check both Firebase auth and local auth
+      final isFirebaseLoggedIn = authState.when(
         data: (user) => user != null,
         loading: () => false,
         error: (_, __) => false,
       );
+
+      // Also check local authentication state
+      final isLocalLoggedIn = AuthService.isLoggedIn;
+      final isLoggedIn = isFirebaseLoggedIn || isLocalLoggedIn || authController.isAuthenticated;
 
       final isOnAuthPage = state.matchedLocation.startsWith('/login') ||
           state.matchedLocation.startsWith('/register') ||
