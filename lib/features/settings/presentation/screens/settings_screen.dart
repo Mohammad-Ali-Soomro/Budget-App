@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/config/theme_config.dart';
-import '../../../../core/providers/app_providers.dart';
+import '../../../../core/providers/app_providers.dart' as app_providers;
+import '../../../../core/providers/auth_provider.dart' as auth_providers;
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -12,9 +14,9 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final user = ref.watch(currentUserProvider);
-    final themeMode = ref.watch(themeModeProvider);
-    final locale = ref.watch(localeProvider);
+    final user = ref.watch(app_providers.currentUserProvider);
+    final themeMode = ref.watch(app_providers.themeModeProvider);
+    final locale = ref.watch(app_providers.localeProvider);
 
     return Scaffold(
       appBar: AppBar(
@@ -90,7 +92,7 @@ class SettingsScreen extends ConsumerWidget {
                   trailing: Switch(
                     value: themeMode == ThemeMode.dark,
                     onChanged: (value) {
-                      ref.read(themeModeProvider.notifier).setThemeMode(
+                      ref.read(app_providers.themeModeProvider.notifier).setThemeMode(
                         value ? ThemeMode.dark : ThemeMode.light,
                       );
                     },
@@ -257,14 +259,14 @@ class SettingsScreen extends ConsumerWidget {
             ListTile(
               title: const Text('English'),
               onTap: () {
-                ref.read(localeProvider.notifier).setLocale(const Locale('en'));
+                ref.read(app_providers.localeProvider.notifier).setLocale(const Locale('en'));
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('اردو'),
               onTap: () {
-                ref.read(localeProvider.notifier).setLocale(const Locale('ur'));
+                ref.read(app_providers.localeProvider.notifier).setLocale(const Locale('ur'));
                 Navigator.pop(context);
               },
             ),
@@ -285,14 +287,14 @@ class SettingsScreen extends ConsumerWidget {
             ListTile(
               title: const Text('Pakistani Rupee (PKR)'),
               onTap: () {
-                ref.read(currencyProvider.notifier).setCurrency('PKR');
+                ref.read(app_providers.currencyProvider.notifier).setCurrency('PKR');
                 Navigator.pop(context);
               },
             ),
             ListTile(
               title: const Text('US Dollar (USD)'),
               onTap: () {
-                ref.read(currencyProvider.notifier).setCurrency('USD');
+                ref.read(app_providers.currencyProvider.notifier).setCurrency('USD');
                 Navigator.pop(context);
               },
             ),
@@ -340,9 +342,46 @@ class SettingsScreen extends ConsumerWidget {
             child: const Text('Cancel'),
           ),
           TextButton(
-            onPressed: () {
-              ref.read(authStateProvider.notifier).signOut();
+            onPressed: () async {
               Navigator.pop(context);
+
+              // Show loading indicator
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
+
+              try {
+                // Sign out using the auth controller
+                await ref.read(auth_providers.authControllerProvider.notifier).signOut();
+
+                // Also clear the app state provider
+                await ref.read(app_providers.authStateProvider.notifier).signOut();
+
+                // Close loading dialog
+                if (context.mounted) {
+                  Navigator.pop(context);
+
+                  // Navigate to login screen
+                  context.go('/login');
+                }
+              } catch (e) {
+                // Close loading dialog
+                if (context.mounted) {
+                  Navigator.pop(context);
+
+                  // Show error message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text('Sign out failed: $e'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              }
             },
             child: const Text('Sign Out'),
           ),

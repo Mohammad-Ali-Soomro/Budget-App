@@ -20,6 +20,11 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
   final authController = ref.watch(authControllerProvider);
 
+  // Listen to auth state changes to trigger router refresh
+  ref.listen<AuthState>(authControllerProvider, (previous, next) {
+    // Router will automatically refresh when this provider changes
+  });
+
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {

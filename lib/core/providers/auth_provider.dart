@@ -219,18 +219,22 @@ class AuthController extends StateNotifier<AuthState> {
   // Sign out
   Future<void> signOut() async {
     state = state.copyWith(isLoading: true, error: null);
-    
+
     try {
       await AuthService.signOut();
       state = state.copyWith(
         isLoading: false,
         isAuthenticated: false,
       );
+
+      // Force a refresh of auth state
+      _checkAuthState();
     } catch (e) {
       state = state.copyWith(
         isLoading: false,
         error: e.toString(),
       );
+      rethrow; // Re-throw to allow UI to handle the error
     }
   }
 

@@ -286,29 +286,41 @@ class AuthService {
 
   // Sign out
   static Future<void> signOut() async {
+    debugPrint('Starting sign out process...');
     _initializeServices();
 
-    if (_useLocalAuth) {
-      // Local sign out
-      final userBox = HiveService.userBox;
-      await userBox.delete('current_user');
-    } else if (_auth != null) {
-      await _auth!.signOut();
-    }
-
-    // Clear stored credentials
-    await _storage.delete(key: 'user_email');
-    await _storage.delete(key: 'user_password');
-
-    // Clear all password hashes (for all users)
     try {
-      final userBox = HiveService.userBox;
-      final allUsers = userBox.values.toList();
-      for (final user in allUsers) {
-        await _storage.delete(key: 'user_password_hash_${user.email}');
+      if (_useLocalAuth) {
+        // Local sign out
+        final userBox = HiveService.userBox;
+        await userBox.delete('current_user');
+        debugPrint('Cleared current_user from local storage');
+      } else if (_auth != null) {
+        await _auth!.signOut();
+        debugPrint('Signed out from Firebase');
       }
+
+      // Clear stored credentials
+      await _storage.delete(key: 'user_email');
+      await _storage.delete(key: 'user_password');
+      debugPrint('Cleared stored credentials');
+
+      // Clear all password hashes (for current session only)
+      try {
+        final userBox = HiveService.userBox;
+        final allUsers = userBox.values.toList();
+        for (final user in allUsers) {
+          await _storage.delete(key: 'user_password_hash_${user.email}');
+        }
+        debugPrint('Cleared password hashes');
+      } catch (e) {
+        debugPrint('Error clearing password hashes: $e');
+      }
+
+      debugPrint('Sign out completed successfully');
     } catch (e) {
-      debugPrint('Error clearing password hashes: $e');
+      debugPrint('Error during sign out: $e');
+      throw Exception('Sign out failed: $e');
     }
   }
 
