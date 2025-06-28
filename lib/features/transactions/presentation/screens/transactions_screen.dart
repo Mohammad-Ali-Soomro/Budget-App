@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/config/theme_config.dart';
+import '../../data/models/transaction_model.dart';
 import '../../../transactions/providers/transaction_providers.dart';
 import '../../../categories/providers/category_providers.dart';
 import '../../../accounts/providers/account_providers.dart';
@@ -141,15 +142,15 @@ class _TransactionsScreenState extends ConsumerState<TransactionsScreen> {
 
   List<dynamic> _filterTransactions(List<dynamic> transactions) {
     if (_selectedFilter == 'All') return transactions;
-    
+
     return transactions.where((transaction) {
       switch (_selectedFilter) {
         case 'Income':
-          return transaction.type.name == 'income';
+          return transaction.type == TransactionType.income;
         case 'Expense':
-          return transaction.type.name == 'expense';
+          return transaction.type == TransactionType.expense;
         case 'Transfer':
-          return transaction.type.name == 'transfer';
+          return transaction.type == TransactionType.transfer;
         default:
           return true;
       }
@@ -327,12 +328,12 @@ class _TransactionItem extends StatelessWidget {
   }
 
   Color _getTransactionColor() {
-    switch (transaction.type.name) {
-      case 'income':
+    switch (transaction.type) {
+      case TransactionType.income:
         return ThemeConfig.primaryGreen;
-      case 'expense':
+      case TransactionType.expense:
         return ThemeConfig.accentRed;
-      case 'transfer':
+      case TransactionType.transfer:
         return ThemeConfig.secondaryBlue;
       default:
         return Colors.grey;

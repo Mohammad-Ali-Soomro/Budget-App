@@ -55,14 +55,19 @@ class BudgetOverview extends ConsumerWidget {
                           orElse: () => categoryList.first,
                         );
 
+                        // Get real-time spending data
+                        final realTimeSpending = ref.watch(realTimeBudgetSpendingProvider(budget.id));
+                        final budgetStatus = ref.watch(realTimeBudgetStatusProvider(budget.id));
+                        final percentage = budget.amount > 0 ? (realTimeSpending / budget.amount).clamp(0.0, 1.0) : 0.0;
+
                         return _BudgetItem(
                           categoryName: category.name,
                           categoryIcon: category.icon,
-                          spent: budget.spent,
+                          spent: realTimeSpending,
                           total: budget.amount,
-                          percentage: budget.percentage,
-                          isExceeded: budget.isExceeded,
-                          isNearLimit: budget.isNearLimit,
+                          percentage: percentage,
+                          isExceeded: budgetStatus == BudgetStatus.exceeded,
+                          isNearLimit: budgetStatus == BudgetStatus.nearLimit,
                         );
                       },
                       loading: () => _BudgetItem(

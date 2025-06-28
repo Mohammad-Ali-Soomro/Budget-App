@@ -3,7 +3,10 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/services/hive_service.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/refresh_provider.dart';
 import '../data/models/transaction_model.dart';
+import '../../accounts/providers/account_providers.dart';
+import '../../budgets/providers/budget_providers.dart';
 
 // Transactions Provider
 final transactionsProvider = StateNotifierProvider<TransactionsNotifier, AsyncValue<List<TransactionModel>>>((ref) {
@@ -70,7 +73,18 @@ class TransactionsNotifier extends StateNotifier<AsyncValue<List<TransactionMode
 
       final transactionBox = HiveService.transactionBox;
       await transactionBox.put(userTransaction.id, userTransaction);
+
+      // Update account balances based on transaction
+      await _updateAccountBalances(userTransaction);
+
+      // Update budget spending if applicable
+      await _updateBudgetSpending(userTransaction);
+
       await _loadTransactions();
+
+      // Use centralized refresh system
+      final refreshCoordinator = _ref.read(refreshCoordinatorProvider);
+      await refreshCoordinator.refreshAfterTransactionChange();
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
@@ -79,8 +93,28 @@ class TransactionsNotifier extends StateNotifier<AsyncValue<List<TransactionMode
   Future<void> updateTransaction(TransactionModel transaction) async {
     try {
       final transactionBox = HiveService.transactionBox;
+
+      // Get the old transaction to reverse its effects
+      final oldTransaction = transactionBox.get(transaction.id);
+      if (oldTransaction != null) {
+        // Reverse the old transaction's account balance effects
+        await _reverseAccountBalances(oldTransaction);
+      }
+
+      // Apply the new transaction
       await transactionBox.put(transaction.id, transaction);
+
+      // Update account balances based on new transaction
+      await _updateAccountBalances(transaction);
+
+      // Update budget spending if applicable
+      await _updateBudgetSpending(transaction);
+
       await _loadTransactions();
+
+      // Use centralized refresh system
+      final refreshCoordinator = _ref.read(refreshCoordinatorProvider);
+      await refreshCoordinator.refreshAfterTransactionChange();
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
@@ -89,8 +123,23 @@ class TransactionsNotifier extends StateNotifier<AsyncValue<List<TransactionMode
   Future<void> deleteTransaction(String transactionId) async {
     try {
       final transactionBox = HiveService.transactionBox;
+
+      // Get the transaction to reverse its effects
+      final transaction = transactionBox.get(transactionId);
+      if (transaction != null) {
+        // Reverse the transaction's account balance effects
+        await _reverseAccountBalances(transaction);
+
+        // Update budget spending if applicable
+        await _updateBudgetSpending(transaction);
+      }
+
       await transactionBox.delete(transactionId);
       await _loadTransactions();
+
+      // Use centralized refresh system
+      final refreshCoordinator = _ref.read(refreshCoordinatorProvider);
+      await refreshCoordinator.refreshAfterTransactionChange();
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
@@ -98,6 +147,64 @@ class TransactionsNotifier extends StateNotifier<AsyncValue<List<TransactionMode
 
   void refresh() {
     _loadTransactions();
+  }
+
+  // Helper method to update account balances when transactions change
+  Future<void> _updateAccountBalances(TransactionModel transaction) async {
+    try {
+      final accountsNotifier = _ref.read(accountsProvider.notifier);
+
+      if (transaction.type == TransactionType.income) {
+        // Add to account balance for income
+        await accountsNotifier.adjustAccountBalance(transaction.accountId, transaction.amount);
+      } else if (transaction.type == TransactionType.expense) {
+        // Subtract from account balance for expense
+        await accountsNotifier.adjustAccountBalance(transaction.accountId, -transaction.amount);
+      } else if (transaction.type == TransactionType.transfer && transaction.toAccountId != null) {
+        // Transfer: subtract from source account, add to destination account
+        await accountsNotifier.adjustAccountBalance(transaction.accountId, -transaction.amount);
+        await accountsNotifier.adjustAccountBalance(transaction.toAccountId!, transaction.amount);
+      }
+    } catch (error) {
+      // Log error but don't fail the transaction
+      print('Error updating account balances: $error');
+    }
+  }
+
+  // Helper method to reverse account balance changes when transactions are updated/deleted
+  Future<void> _reverseAccountBalances(TransactionModel transaction) async {
+    try {
+      final accountsNotifier = _ref.read(accountsProvider.notifier);
+
+      if (transaction.type == TransactionType.income) {
+        // Reverse income: subtract from account balance
+        await accountsNotifier.adjustAccountBalance(transaction.accountId, -transaction.amount);
+      } else if (transaction.type == TransactionType.expense) {
+        // Reverse expense: add back to account balance
+        await accountsNotifier.adjustAccountBalance(transaction.accountId, transaction.amount);
+      } else if (transaction.type == TransactionType.transfer && transaction.toAccountId != null) {
+        // Reverse transfer: add back to source account, subtract from destination account
+        await accountsNotifier.adjustAccountBalance(transaction.accountId, transaction.amount);
+        await accountsNotifier.adjustAccountBalance(transaction.toAccountId!, -transaction.amount);
+      }
+    } catch (error) {
+      // Log error but don't fail the transaction
+      print('Error reversing account balances: $error');
+    }
+  }
+
+  // Helper method to update budget spending when transactions change
+  Future<void> _updateBudgetSpending(TransactionModel transaction) async {
+    try {
+      if (transaction.type == TransactionType.expense) {
+        final budgetsNotifier = _ref.read(budgetsProvider.notifier);
+        // The budget provider will automatically recalculate spending based on transactions
+        budgetsNotifier.refresh();
+      }
+    } catch (error) {
+      // Log error but don't fail the transaction
+      print('Error updating budget spending: $error');
+    }
   }
 }
 

@@ -63,9 +63,9 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      // Navigate to profile edit
+                      context.push('/profile');
                     },
-                    icon: Icon(PhosphorIcons.pencil()),
+                    icon: Icon(PhosphorIcons.caretRight()),
                   ),
                 ],
               ),

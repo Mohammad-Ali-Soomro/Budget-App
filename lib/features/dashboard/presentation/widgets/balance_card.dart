@@ -14,13 +14,12 @@ class BalanceCard extends ConsumerWidget {
     final theme = Theme.of(context);
     final accounts = ref.watch(accountsProvider);
     final currency = ref.watch(currencyProvider);
+    final realTimeBalance = ref.watch(realTimeBalanceProvider);
 
     return accounts.when(
       data: (accountList) {
-        final totalBalance = accountList.fold<double>(
-          0.0,
-          (sum, account) => sum + account.balance,
-        );
+        return realTimeBalance.when(
+          data: (totalBalance) {
 
         return Container(
           width: double.infinity,
@@ -130,6 +129,44 @@ class BalanceCard extends ConsumerWidget {
                   ],
                 ),
               ],
+            ),
+          ),
+        );
+          },
+          loading: () => Container(
+            width: double.infinity,
+            height: 180,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ),
+          error: (error, stack) => Container(
+            width: double.infinity,
+            height: 180,
+            decoration: BoxDecoration(
+              color: theme.colorScheme.errorContainer,
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    color: theme.colorScheme.error,
+                    size: 32,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Error loading balance',
+                    style: TextStyle(color: theme.colorScheme.error),
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -15,6 +15,7 @@ import '../../features/transactions/presentation/screens/add_transaction_screen.
 import '../../features/budgets/presentation/screens/budgets_screen.dart';
 import '../../features/accounts/presentation/screens/accounts_screen.dart';
 import '../../features/settings/presentation/screens/settings_screen.dart';
+import '../../features/settings/presentation/screens/profile_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
@@ -114,6 +115,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/settings',
             builder: (context, state) => const SettingsScreen(),
+          ),
+          GoRoute(
+            path: '/profile',
+            builder: (context, state) => const ProfileScreen(),
           ),
         ],
       ),

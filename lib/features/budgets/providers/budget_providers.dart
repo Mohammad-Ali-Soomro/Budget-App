@@ -205,19 +205,20 @@ final budgetStatsProvider = Provider<AsyncValue<BudgetStats>>((ref) {
   );
 });
 
-// Budget Progress Provider
+// Real-time Budget Progress Provider
 final budgetProgressProvider = Provider.family<double, String>((ref, budgetId) {
   final budget = ref.watch(budgetByIdProvider(budgetId));
   if (budget == null) return 0.0;
-  
-  // Calculate spent amount from transactions
+
+  // Calculate spent amount from transactions in real-time
   final transactions = ref.watch(transactionsByCategoryProvider(budget.categoryId));
   final spent = transactions
       .where((t) => t.type == TransactionType.expense)
-      .where((t) => t.date.isAfter(budget.startDate) && t.date.isBefore(budget.endDate))
+      .where((t) => t.date.isAfter(budget.startDate.subtract(const Duration(days: 1))) &&
+                   t.date.isBefore(budget.endDate.add(const Duration(days: 1))))
       .fold<double>(0.0, (sum, t) => sum + t.amount);
-  
-  // Update budget spent amount
+
+  // Update budget spent amount in background if different
   if (spent != budget.spent) {
     Future.microtask(() {
       ref.read(budgetsProvider.notifier).updateBudgetSpent(budgetId, spent);
@@ -226,6 +227,48 @@ final budgetProgressProvider = Provider.family<double, String>((ref, budgetId) {
   
   return budget.amount > 0 ? (spent / budget.amount).clamp(0.0, 1.0) : 0.0;
 });
+
+// Real-time Budget Spending Provider
+final realTimeBudgetSpendingProvider = Provider.family<double, String>((ref, budgetId) {
+  final budget = ref.watch(budgetByIdProvider(budgetId));
+  if (budget == null) return 0.0;
+
+  // Watch transactions to get real-time updates
+  final transactions = ref.watch(transactionsByCategoryProvider(budget.categoryId));
+
+  // Calculate current spending for this budget period
+  final currentSpending = transactions
+      .where((t) => t.type == TransactionType.expense)
+      .where((t) => t.date.isAfter(budget.startDate.subtract(const Duration(days: 1))) &&
+                   t.date.isBefore(budget.endDate.add(const Duration(days: 1))))
+      .fold<double>(0.0, (sum, t) => sum + t.amount);
+
+  return currentSpending;
+});
+
+// Real-time Budget Status Provider
+final realTimeBudgetStatusProvider = Provider.family<BudgetStatus, String>((ref, budgetId) {
+  final budget = ref.watch(budgetByIdProvider(budgetId));
+  if (budget == null) return BudgetStatus.normal;
+
+  final currentSpending = ref.watch(realTimeBudgetSpendingProvider(budgetId));
+  final percentage = currentSpending / budget.amount;
+
+  if (percentage >= 1.0) {
+    return BudgetStatus.exceeded;
+  } else if (percentage >= 0.8) {
+    return BudgetStatus.nearLimit;
+  } else {
+    return BudgetStatus.normal;
+  }
+});
+
+// Budget Status Enum
+enum BudgetStatus {
+  normal,
+  nearLimit,
+  exceeded,
+}
 
 // Budget Creation Provider
 final createBudgetProvider = Provider<Future<void> Function(BudgetModel)>((ref) {

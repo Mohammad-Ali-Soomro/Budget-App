@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 
 import '../../../../core/config/theme_config.dart';
 import '../../../../core/providers/app_providers.dart';
+import '../../../../core/providers/refresh_provider.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/quick_actions.dart';
 import '../widgets/recent_transactions.dart';
@@ -18,14 +19,16 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final user = ref.watch(currentUserProvider);
+    final refreshStatus = ref.watch(refreshStatusProvider);
+    final dataFreshness = ref.watch(dataFreshnessProvider);
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       body: SafeArea(
         child: RefreshIndicator(
           onRefresh: () async {
-            // Refresh dashboard data
-            await Future.delayed(const Duration(seconds: 1));
+            final manualRefresh = ref.read(manualRefreshProvider);
+            await manualRefresh();
           },
           child: CustomScrollView(
             slivers: [
@@ -62,6 +65,42 @@ class DashboardScreen extends ConsumerWidget {
                   titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
                 ),
                 actions: [
+                  // Data freshness indicator
+                  Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: _getDataFreshnessColor(dataFreshness).withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: _getDataFreshnessColor(dataFreshness),
+                            width: 1,
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              _getDataFreshnessIcon(dataFreshness),
+                              size: 12,
+                              color: _getDataFreshnessColor(dataFreshness),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              _getDataFreshnessText(dataFreshness),
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: _getDataFreshnessColor(dataFreshness),
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   IconButton(
                     onPressed: () {
                       // Show notifications
@@ -230,5 +269,50 @@ class DashboardScreen extends ConsumerWidget {
     
     final index = DateTime.now().day % tips.length;
     return tips[index];
+  }
+
+  Color _getDataFreshnessColor(DataFreshness freshness) {
+    switch (freshness) {
+      case DataFreshness.fresh:
+        return ThemeConfig.primaryGreen;
+      case DataFreshness.recent:
+        return Colors.blue;
+      case DataFreshness.stale:
+        return Colors.orange;
+      case DataFreshness.veryStale:
+        return ThemeConfig.accentRed;
+      case DataFreshness.unknown:
+        return Colors.grey;
+    }
+  }
+
+  IconData _getDataFreshnessIcon(DataFreshness freshness) {
+    switch (freshness) {
+      case DataFreshness.fresh:
+        return Icons.check_circle;
+      case DataFreshness.recent:
+        return Icons.schedule;
+      case DataFreshness.stale:
+        return Icons.warning;
+      case DataFreshness.veryStale:
+        return Icons.error;
+      case DataFreshness.unknown:
+        return Icons.help;
+    }
+  }
+
+  String _getDataFreshnessText(DataFreshness freshness) {
+    switch (freshness) {
+      case DataFreshness.fresh:
+        return 'Live';
+      case DataFreshness.recent:
+        return 'Recent';
+      case DataFreshness.stale:
+        return 'Stale';
+      case DataFreshness.veryStale:
+        return 'Old';
+      case DataFreshness.unknown:
+        return 'Unknown';
+    }
   }
 }
