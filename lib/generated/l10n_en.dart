@@ -206,4 +206,113 @@ class SEn extends S {
 
   @override
   String get financialTip => 'Financial Tip';
+
+  @override
+  String get profile => 'Profile';
+
+  @override
+  String get personalInformation => 'Personal Information';
+
+  @override
+  String get updateProfileDetails => 'Update your profile details';
+
+  @override
+  String get securitySettings => 'Security Settings';
+
+  @override
+  String get changePasswordSecurity => 'Change password and security options';
+
+  @override
+  String get notificationPreferences => 'Notification Preferences';
+
+  @override
+  String get manageNotificationSettings => 'Manage your notification settings';
+
+  @override
+  String get currencyLanguage => 'Currency & Language';
+
+  @override
+  String get setPreferredCurrencyLanguage =>
+      'Set your preferred currency and language';
+
+  @override
+  String get dataPrivacy => 'Data & Privacy';
+
+  @override
+  String get exportData => 'Export Data';
+
+  @override
+  String get downloadFinancialData => 'Download your financial data';
+
+  @override
+  String get backupSync => 'Backup & Sync';
+
+  @override
+  String get manageDataBackupSync => 'Manage data backup and synchronization';
+
+  @override
+  String get privacyPolicy => 'Privacy Policy';
+
+  @override
+  String get readPrivacyPolicy => 'Read our privacy policy';
+
+  @override
+  String get signOut => 'Sign Out';
+
+  @override
+  String get signOutConfirmation => 'Are you sure you want to sign out?';
+
+  @override
+  String get financialSummary => 'Financial Summary';
+
+  @override
+  String get accountManagement => 'Account Management';
+
+  @override
+  String get activeBudgets => 'Active Budgets';
+
+  @override
+  String get monthlyIncome => 'Monthly Income';
+
+  @override
+  String get monthlyExpenses => 'Monthly Expenses';
+
+  @override
+  String get spent => 'Spent';
+
+  @override
+  String get budget => 'Budget';
+
+  @override
+  String get remaining => 'Remaining';
+
+  @override
+  String get overBudgetBy => 'Over budget by';
+
+  @override
+  String get normal => 'Normal';
+
+  @override
+  String get live => 'Live';
+
+  @override
+  String get recent => 'Recent';
+
+  @override
+  String get stale => 'Stale';
+
+  @override
+  String get old => 'Old';
+
+  @override
+  String get unknown => 'Unknown';
+
+  @override
+  String get dataFreshness => 'Data Freshness';
+
+  @override
+  String get lastUpdated => 'Last Updated';
+
+  @override
+  String get noBudgetsYet => 'No Budgets Yet';
 }

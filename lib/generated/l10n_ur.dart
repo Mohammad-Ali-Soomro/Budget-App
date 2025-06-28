@@ -207,4 +207,116 @@ class SUr extends S {
 
   @override
   String get financialTip => 'مالی مشورہ';
+
+  @override
+  String get profile => 'پروفائل';
+
+  @override
+  String get personalInformation => 'ذاتی معلومات';
+
+  @override
+  String get updateProfileDetails => 'اپنی پروفائل کی تفصیلات اپ ڈیٹ کریں';
+
+  @override
+  String get securitySettings => 'سیکیورٹی کی ترتیبات';
+
+  @override
+  String get changePasswordSecurity =>
+      'پاس ورڈ اور سیکیورٹی کے اختیارات تبدیل کریں';
+
+  @override
+  String get notificationPreferences => 'اطلاع کی ترجیحات';
+
+  @override
+  String get manageNotificationSettings =>
+      'اپنی اطلاع کی ترتیبات کا انتظام کریں';
+
+  @override
+  String get currencyLanguage => 'کرنسی اور زبان';
+
+  @override
+  String get setPreferredCurrencyLanguage =>
+      'اپنی پسندیدہ کرنسی اور زبان سیٹ کریں';
+
+  @override
+  String get dataPrivacy => 'ڈیٹا اور پرائیویسی';
+
+  @override
+  String get exportData => 'ڈیٹا برآمد کریں';
+
+  @override
+  String get downloadFinancialData => 'اپنا مالی ڈیٹا ڈاؤن لوڈ کریں';
+
+  @override
+  String get backupSync => 'بیک اپ اور سنک';
+
+  @override
+  String get manageDataBackupSync =>
+      'ڈیٹا بیک اپ اور سنکرونائزیشن کا انتظام کریں';
+
+  @override
+  String get privacyPolicy => 'پرائیویسی پالیسی';
+
+  @override
+  String get readPrivacyPolicy => 'ہماری پرائیویسی پالیسی پڑھیں';
+
+  @override
+  String get signOut => 'سائن آؤٹ';
+
+  @override
+  String get signOutConfirmation => 'کیا آپ واقعی سائن آؤٹ کرنا چاہتے ہیں؟';
+
+  @override
+  String get financialSummary => 'مالی خلاصہ';
+
+  @override
+  String get accountManagement => 'اکاؤنٹ کا انتظام';
+
+  @override
+  String get activeBudgets => 'فعال بجٹس';
+
+  @override
+  String get monthlyIncome => 'ماہانہ آمدنی';
+
+  @override
+  String get monthlyExpenses => 'ماہانہ اخراجات';
+
+  @override
+  String get spent => 'خرچ شدہ';
+
+  @override
+  String get budget => 'بجٹ';
+
+  @override
+  String get remaining => 'باقی';
+
+  @override
+  String get overBudgetBy => 'بجٹ سے زیادہ';
+
+  @override
+  String get normal => 'عام';
+
+  @override
+  String get live => 'براہ راست';
+
+  @override
+  String get recent => 'حالیہ';
+
+  @override
+  String get stale => 'پرانا';
+
+  @override
+  String get old => 'بہت پرانا';
+
+  @override
+  String get unknown => 'نامعلوم';
+
+  @override
+  String get dataFreshness => 'ڈیٹا کی تازگی';
+
+  @override
+  String get lastUpdated => 'آخری بار اپ ڈیٹ';
+
+  @override
+  String get noBudgetsYet => 'ابھی تک کوئی بجٹ نہیں';
 }

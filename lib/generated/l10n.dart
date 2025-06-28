@@ -127,7 +127,7 @@ abstract class S {
   /// **'Goals'**
   String get goals;
 
-  /// Settings tab label
+  /// Settings screen title
   ///
   /// In en, this message translates to:
   /// **'Settings'**
@@ -492,6 +492,222 @@ abstract class S {
   /// In en, this message translates to:
   /// **'Financial Tip'**
   String get financialTip;
+
+  /// Profile screen title
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profile;
+
+  /// Personal information section
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get personalInformation;
+
+  /// Update profile description
+  ///
+  /// In en, this message translates to:
+  /// **'Update your profile details'**
+  String get updateProfileDetails;
+
+  /// Security settings section
+  ///
+  /// In en, this message translates to:
+  /// **'Security Settings'**
+  String get securitySettings;
+
+  /// Security settings description
+  ///
+  /// In en, this message translates to:
+  /// **'Change password and security options'**
+  String get changePasswordSecurity;
+
+  /// Notification preferences section
+  ///
+  /// In en, this message translates to:
+  /// **'Notification Preferences'**
+  String get notificationPreferences;
+
+  /// Notification settings description
+  ///
+  /// In en, this message translates to:
+  /// **'Manage your notification settings'**
+  String get manageNotificationSettings;
+
+  /// Currency and language section
+  ///
+  /// In en, this message translates to:
+  /// **'Currency & Language'**
+  String get currencyLanguage;
+
+  /// Currency language description
+  ///
+  /// In en, this message translates to:
+  /// **'Set your preferred currency and language'**
+  String get setPreferredCurrencyLanguage;
+
+  /// Data and privacy section
+  ///
+  /// In en, this message translates to:
+  /// **'Data & Privacy'**
+  String get dataPrivacy;
+
+  /// Export data option
+  ///
+  /// In en, this message translates to:
+  /// **'Export Data'**
+  String get exportData;
+
+  /// Export data description
+  ///
+  /// In en, this message translates to:
+  /// **'Download your financial data'**
+  String get downloadFinancialData;
+
+  /// Backup and sync section
+  ///
+  /// In en, this message translates to:
+  /// **'Backup & Sync'**
+  String get backupSync;
+
+  /// Backup sync description
+  ///
+  /// In en, this message translates to:
+  /// **'Manage data backup and synchronization'**
+  String get manageDataBackupSync;
+
+  /// Privacy policy section
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy Policy'**
+  String get privacyPolicy;
+
+  /// Privacy policy description
+  ///
+  /// In en, this message translates to:
+  /// **'Read our privacy policy'**
+  String get readPrivacyPolicy;
+
+  /// Sign out button
+  ///
+  /// In en, this message translates to:
+  /// **'Sign Out'**
+  String get signOut;
+
+  /// Sign out confirmation message
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get signOutConfirmation;
+
+  /// Financial summary section
+  ///
+  /// In en, this message translates to:
+  /// **'Financial Summary'**
+  String get financialSummary;
+
+  /// Account management section
+  ///
+  /// In en, this message translates to:
+  /// **'Account Management'**
+  String get accountManagement;
+
+  /// Active budgets label
+  ///
+  /// In en, this message translates to:
+  /// **'Active Budgets'**
+  String get activeBudgets;
+
+  /// Monthly income label
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Income'**
+  String get monthlyIncome;
+
+  /// Monthly expenses label
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly Expenses'**
+  String get monthlyExpenses;
+
+  /// Spent amount label
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get spent;
+
+  /// Budget amount label
+  ///
+  /// In en, this message translates to:
+  /// **'Budget'**
+  String get budget;
+
+  /// Remaining amount label
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get remaining;
+
+  /// Over budget message
+  ///
+  /// In en, this message translates to:
+  /// **'Over budget by'**
+  String get overBudgetBy;
+
+  /// Normal budget status
+  ///
+  /// In en, this message translates to:
+  /// **'Normal'**
+  String get normal;
+
+  /// Live data freshness
+  ///
+  /// In en, this message translates to:
+  /// **'Live'**
+  String get live;
+
+  /// Recent data freshness
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get recent;
+
+  /// Stale data freshness
+  ///
+  /// In en, this message translates to:
+  /// **'Stale'**
+  String get stale;
+
+  /// Old data freshness
+  ///
+  /// In en, this message translates to:
+  /// **'Old'**
+  String get old;
+
+  /// Unknown data freshness
+  ///
+  /// In en, this message translates to:
+  /// **'Unknown'**
+  String get unknown;
+
+  /// Data freshness indicator
+  ///
+  /// In en, this message translates to:
+  /// **'Data Freshness'**
+  String get dataFreshness;
+
+  /// Last updated label
+  ///
+  /// In en, this message translates to:
+  /// **'Last Updated'**
+  String get lastUpdated;
+
+  /// Empty state message for budgets
+  ///
+  /// In en, this message translates to:
+  /// **'No Budgets Yet'**
+  String get noBudgetsYet;
 }
 
 class _SDelegate extends LocalizationsDelegate<S> {

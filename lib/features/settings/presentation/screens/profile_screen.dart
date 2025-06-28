@@ -4,6 +4,7 @@ import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 import '../../../../core/config/theme_config.dart';
 import '../../../../core/providers/app_providers.dart';
+import '../../../../generated/l10n.dart';
 import '../../../accounts/providers/account_providers.dart';
 import '../../../transactions/providers/transaction_providers.dart';
 import '../../../budgets/providers/budget_providers.dart';
@@ -14,6 +15,7 @@ class ProfileScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = S.of(context);
     final user = ref.watch(currentUserProvider);
     final currency = ref.watch(currencyProvider);
     final totalBalance = ref.watch(realTimeBalanceProvider);
@@ -23,7 +25,7 @@ class ProfileScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Profile'),
+        title: Text(l10n.profile),
         actions: [
           IconButton(
             onPressed: () {

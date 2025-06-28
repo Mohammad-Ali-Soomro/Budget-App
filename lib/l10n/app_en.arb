@@ -328,5 +328,195 @@
   "financialTip": "Financial Tip",
   "@financialTip": {
     "description": "Financial tip section title"
+  },
+
+  "profile": "Profile",
+  "@profile": {
+    "description": "Profile screen title"
+  },
+
+  "personalInformation": "Personal Information",
+  "@personalInformation": {
+    "description": "Personal information section"
+  },
+
+  "updateProfileDetails": "Update your profile details",
+  "@updateProfileDetails": {
+    "description": "Update profile description"
+  },
+
+  "securitySettings": "Security Settings",
+  "@securitySettings": {
+    "description": "Security settings section"
+  },
+
+  "changePasswordSecurity": "Change password and security options",
+  "@changePasswordSecurity": {
+    "description": "Security settings description"
+  },
+
+  "notificationPreferences": "Notification Preferences",
+  "@notificationPreferences": {
+    "description": "Notification preferences section"
+  },
+
+  "manageNotificationSettings": "Manage your notification settings",
+  "@manageNotificationSettings": {
+    "description": "Notification settings description"
+  },
+
+  "currencyLanguage": "Currency & Language",
+  "@currencyLanguage": {
+    "description": "Currency and language section"
+  },
+
+  "setPreferredCurrencyLanguage": "Set your preferred currency and language",
+  "@setPreferredCurrencyLanguage": {
+    "description": "Currency language description"
+  },
+
+  "dataPrivacy": "Data & Privacy",
+  "@dataPrivacy": {
+    "description": "Data and privacy section"
+  },
+
+  "exportData": "Export Data",
+  "@exportData": {
+    "description": "Export data option"
+  },
+
+  "downloadFinancialData": "Download your financial data",
+  "@downloadFinancialData": {
+    "description": "Export data description"
+  },
+
+  "backupSync": "Backup & Sync",
+  "@backupSync": {
+    "description": "Backup and sync section"
+  },
+
+  "manageDataBackupSync": "Manage data backup and synchronization",
+  "@manageDataBackupSync": {
+    "description": "Backup sync description"
+  },
+
+  "privacyPolicy": "Privacy Policy",
+  "@privacyPolicy": {
+    "description": "Privacy policy section"
+  },
+
+  "readPrivacyPolicy": "Read our privacy policy",
+  "@readPrivacyPolicy": {
+    "description": "Privacy policy description"
+  },
+
+  "signOut": "Sign Out",
+  "@signOut": {
+    "description": "Sign out button"
+  },
+
+  "signOutConfirmation": "Are you sure you want to sign out?",
+  "@signOutConfirmation": {
+    "description": "Sign out confirmation message"
+  },
+
+  "financialSummary": "Financial Summary",
+  "@financialSummary": {
+    "description": "Financial summary section"
+  },
+
+  "accountManagement": "Account Management",
+  "@accountManagement": {
+    "description": "Account management section"
+  },
+
+  "activeBudgets": "Active Budgets",
+  "@activeBudgets": {
+    "description": "Active budgets label"
+  },
+
+  "monthlyIncome": "Monthly Income",
+  "@monthlyIncome": {
+    "description": "Monthly income label"
+  },
+
+  "monthlyExpenses": "Monthly Expenses",
+  "@monthlyExpenses": {
+    "description": "Monthly expenses label"
+  },
+
+  "spent": "Spent",
+  "@spent": {
+    "description": "Spent amount label"
+  },
+
+  "budget": "Budget",
+  "@budget": {
+    "description": "Budget amount label"
+  },
+
+  "remaining": "Remaining",
+  "@remaining": {
+    "description": "Remaining amount label"
+  },
+
+  "overBudgetBy": "Over budget by",
+  "@overBudgetBy": {
+    "description": "Over budget message"
+  },
+
+  "normal": "Normal",
+  "@normal": {
+    "description": "Normal budget status"
+  },
+
+  "live": "Live",
+  "@live": {
+    "description": "Live data freshness"
+  },
+
+  "recent": "Recent",
+  "@recent": {
+    "description": "Recent data freshness"
+  },
+
+  "stale": "Stale",
+  "@stale": {
+    "description": "Stale data freshness"
+  },
+
+  "old": "Old",
+  "@old": {
+    "description": "Old data freshness"
+  },
+
+  "unknown": "Unknown",
+  "@unknown": {
+    "description": "Unknown data freshness"
+  },
+
+  "dataFreshness": "Data Freshness",
+  "@dataFreshness": {
+    "description": "Data freshness indicator"
+  },
+
+  "lastUpdated": "Last Updated",
+  "@lastUpdated": {
+    "description": "Last updated label"
+  },
+
+  "noBudgetsYet": "No Budgets Yet",
+  "@noBudgetsYet": {
+    "description": "Empty state message for budgets"
+  },
+
+  "createFirstBudget": "Create your first budget to track spending",
+  "@createFirstBudget": {
+    "description": "Empty state description for budgets"
+  },
+
+  "settings": "Settings",
+  "@settings": {
+    "description": "Settings screen title"
   }
 }

@@ -7,6 +7,7 @@ import '../../../../core/config/app_config.dart';
 import '../../../../core/config/theme_config.dart';
 import '../../../../core/providers/app_providers.dart' as app_providers;
 import '../../../../core/providers/auth_provider.dart' as auth_providers;
+import '../../../../generated/l10n.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -14,13 +15,15 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = S.of(context);
     final user = ref.watch(app_providers.currentUserProvider);
     final themeMode = ref.watch(app_providers.themeModeProvider);
-    final locale = ref.watch(app_providers.localeProvider);
+    final currency = ref.watch(app_providers.currencyProvider);
+    final currentLocale = ref.watch(app_providers.localeProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(l10n.settings),
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
@@ -102,7 +105,7 @@ class SettingsScreen extends ConsumerWidget {
                 ListTile(
                   leading: Icon(PhosphorIcons.translate()),
                   title: const Text('Language'),
-                  subtitle: Text(locale.languageCode == 'ur' ? 'اردو' : 'English'),
+                  subtitle: Text(currentLocale.languageCode == 'ur' ? 'اردو' : 'English'),
                   trailing: Icon(PhosphorIcons.caretRight()),
                   onTap: () {
                     _showLanguageDialog(context, ref);

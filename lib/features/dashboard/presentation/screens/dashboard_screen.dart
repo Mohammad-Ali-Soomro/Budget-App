@@ -6,6 +6,7 @@ import 'package:fl_chart/fl_chart.dart';
 import '../../../../core/config/theme_config.dart';
 import '../../../../core/providers/app_providers.dart';
 import '../../../../core/providers/refresh_provider.dart';
+import '../../../../generated/l10n.dart';
 import '../widgets/balance_card.dart';
 import '../widgets/quick_actions.dart';
 import '../widgets/recent_transactions.dart';
@@ -18,6 +19,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final l10n = S.of(context);
     final user = ref.watch(currentUserProvider);
     final refreshStatus = ref.watch(refreshStatusProvider);
     final dataFreshness = ref.watch(dataFreshnessProvider);
@@ -142,7 +144,7 @@ class DashboardScreen extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Spending Overview',
+                                  l10n.spendingOverview,
                                   style: theme.textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -151,7 +153,7 @@ class DashboardScreen extends ConsumerWidget {
                                   onPressed: () {
                                     // Navigate to detailed analytics
                                   },
-                                  child: const Text('View All'),
+                                  child: Text(l10n.viewAll),
                                 ),
                               ],
                             ),
@@ -180,7 +182,7 @@ class DashboardScreen extends ConsumerWidget {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  'Recent Transactions',
+                                  l10n.recentTransactions,
                                   style: theme.textTheme.titleMedium?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -189,7 +191,7 @@ class DashboardScreen extends ConsumerWidget {
                                   onPressed: () {
                                     ref.read(navigationIndexProvider.notifier).setIndex(1);
                                   },
-                                  child: const Text('View All'),
+                                  child: Text(l10n.viewAll),
                                 ),
                               ],
                             ),
