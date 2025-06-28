@@ -33,6 +33,7 @@ class TransactionModel extends HiveObject {
     this.recurringId,
     this.location,
     this.tags,
+    this.userId, // Optional for legacy data compatibility
   });
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
@@ -57,6 +58,7 @@ class TransactionModel extends HiveObject {
       recurringId: json['recurringId'],
       location: json['location'],
       tags: json['tags'] != null ? List<String>.from(json['tags']) : null,
+      userId: json['userId'], // Can be null for legacy data
     );
   }
   @HiveField(0)
@@ -110,6 +112,9 @@ class TransactionModel extends HiveObject {
   @HiveField(16)
   final List<String>? tags;
 
+  @HiveField(17)
+  final String? userId; // User ID for data isolation (nullable for legacy data)
+
   TransactionModel copyWith({
     String? id,
     double? amount,
@@ -128,6 +133,7 @@ class TransactionModel extends HiveObject {
     String? recurringId,
     String? location,
     List<String>? tags,
+    String? userId,
   }) {
     return TransactionModel(
       id: id ?? this.id,
@@ -147,6 +153,7 @@ class TransactionModel extends HiveObject {
       recurringId: recurringId ?? this.recurringId,
       location: location ?? this.location,
       tags: tags ?? this.tags,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -169,6 +176,7 @@ class TransactionModel extends HiveObject {
       'recurringId': recurringId,
       'location': location,
       'tags': tags,
+      'userId': userId,
     };
   }
 

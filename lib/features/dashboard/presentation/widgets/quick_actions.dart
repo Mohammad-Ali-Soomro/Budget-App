@@ -7,7 +7,6 @@ import '../../../../core/providers/app_providers.dart';
 import '../../../transactions/data/models/transaction_model.dart';
 import '../../../transactions/presentation/screens/add_transaction_screen.dart';
 import '../../../budgets/presentation/screens/add_budget_screen.dart';
-import '../../../goals/presentation/screens/add_goal_screen.dart';
 import '../../../accounts/presentation/screens/add_account_screen.dart';
 
 class QuickActions extends ConsumerWidget {
@@ -27,6 +26,7 @@ class QuickActions extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 16),
+        // First row of actions
         Row(
           children: [
             Expanded(
@@ -80,13 +80,13 @@ class QuickActions extends ConsumerWidget {
             const SizedBox(width: 12),
             Expanded(
               child: _QuickActionButton(
-                icon: PhosphorIcons.target(),
-                label: 'Add Goal',
+                icon: PhosphorIcons.wallet(),
+                label: 'Add Account',
                 color: ThemeConfig.accentOrange,
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const AddGoalScreen(),
+                      builder: (context) => const AddAccountScreen(),
                     ),
                   );
                 },

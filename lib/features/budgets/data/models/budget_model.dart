@@ -33,6 +33,7 @@ class BudgetModel extends HiveObject {
     this.updatedAt,
     this.description,
     this.metadata,
+    required this.userId,
   });
 
   factory BudgetModel.fromJson(Map<String, dynamic> json) {
@@ -55,6 +56,7 @@ class BudgetModel extends HiveObject {
       updatedAt: json['updatedAt'] != null ? DateTime.parse(json['updatedAt']) : null,
       description: json['description'],
       metadata: json['metadata'],
+      userId: json['userId'] ?? '',
     );
   }
   @HiveField(0)
@@ -102,6 +104,9 @@ class BudgetModel extends HiveObject {
   @HiveField(14)
   final Map<String, dynamic>? metadata;
 
+  @HiveField(15)
+  final String userId; // User ID for data isolation
+
   BudgetModel copyWith({
     String? id,
     String? name,
@@ -118,6 +123,7 @@ class BudgetModel extends HiveObject {
     DateTime? updatedAt,
     String? description,
     Map<String, dynamic>? metadata,
+    String? userId,
   }) {
     return BudgetModel(
       id: id ?? this.id,
@@ -135,6 +141,7 @@ class BudgetModel extends HiveObject {
       updatedAt: updatedAt ?? DateTime.now(),
       description: description ?? this.description,
       metadata: metadata ?? this.metadata,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -155,6 +162,7 @@ class BudgetModel extends HiveObject {
       'updatedAt': updatedAt?.toIso8601String(),
       'description': description,
       'metadata': metadata,
+      'userId': userId,
     };
   }
 

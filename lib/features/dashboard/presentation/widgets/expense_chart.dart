@@ -100,8 +100,8 @@ class ExpenseChart extends ConsumerWidget {
                   isCurved: true,
                   gradient: LinearGradient(
                     colors: [
-                      ThemeConfig.primaryGreen,
-                      ThemeConfig.primaryGreenLight,
+                      ThemeConfig.accentRed,
+                      ThemeConfig.accentRed.withOpacity(0.7),
                     ],
                   ),
                   barWidth: 3,
@@ -111,7 +111,7 @@ class ExpenseChart extends ConsumerWidget {
                     getDotPainter: (spot, percent, barData, index) {
                       return FlDotCirclePainter(
                         radius: 4,
-                        color: ThemeConfig.primaryGreen,
+                        color: ThemeConfig.accentRed,
                         strokeWidth: 2,
                         strokeColor: Colors.white,
                       );
@@ -123,8 +123,8 @@ class ExpenseChart extends ConsumerWidget {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        ThemeConfig.primaryGreen.withOpacity(0.3),
-                        ThemeConfig.primaryGreen.withOpacity(0.1),
+                        ThemeConfig.accentRed.withOpacity(0.3),
+                        ThemeConfig.accentRed.withOpacity(0.1),
                         Colors.transparent,
                       ],
                     ),

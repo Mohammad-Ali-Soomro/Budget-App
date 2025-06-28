@@ -2,24 +2,46 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/services/hive_service.dart';
+import '../../../core/providers/app_providers.dart';
 import '../data/models/account_model.dart';
 
 // Accounts Provider
 final accountsProvider = StateNotifierProvider<AccountsNotifier, AsyncValue<List<AccountModel>>>((ref) {
-  return AccountsNotifier();
+  return AccountsNotifier(ref);
 });
 
 class AccountsNotifier extends StateNotifier<AsyncValue<List<AccountModel>>> {
-  AccountsNotifier() : super(const AsyncValue.loading()) {
+  final Ref _ref;
+
+  AccountsNotifier(this._ref) : super(const AsyncValue.loading()) {
     _loadAccounts();
+
+    // Listen to current user changes and refresh data
+    _ref.listen(currentUserProvider, (previous, next) {
+      if (previous?.id != next?.id) {
+        _loadAccounts();
+      }
+    });
   }
 
   Future<void> _loadAccounts() async {
     try {
+      final currentUser = _ref.read(currentUserProvider);
+      if (currentUser == null) {
+        state = const AsyncValue.data([]);
+        return;
+      }
+
       final accountBox = HiveService.accountBox;
-      final accounts = accountBox.values.where((account) => account.isActive).toList();
-      accounts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      state = AsyncValue.data(accounts);
+      final allAccounts = accountBox.values.where((account) => account.isActive).toList();
+
+      // Filter accounts by current user ID
+      final userAccounts = allAccounts
+          .where((account) => account.userId == currentUser.id)
+          .toList();
+
+      userAccounts.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      state = AsyncValue.data(userAccounts);
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
@@ -27,8 +49,14 @@ class AccountsNotifier extends StateNotifier<AsyncValue<List<AccountModel>>> {
 
   Future<void> addAccount(AccountModel account) async {
     try {
+      final currentUser = _ref.read(currentUserProvider);
+      if (currentUser == null) return;
+
+      // Ensure account has correct user ID
+      final userAccount = account.copyWith(userId: currentUser.id);
+
       final accountBox = HiveService.accountBox;
-      await accountBox.put(account.id, account);
+      await accountBox.put(userAccount.id, userAccount);
       await _loadAccounts();
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
@@ -165,6 +193,7 @@ AccountModel createNewAccount({
   required String name,
   required AccountType type,
   required double initialBalance,
+  required String userId,
   String? bankName,
   String? accountNumber,
   String? cardNumber,
@@ -181,5 +210,6 @@ AccountModel createNewAccount({
     cardNumber: cardNumber,
     description: description,
     createdAt: DateTime.now(),
+    userId: userId,
   );
 }

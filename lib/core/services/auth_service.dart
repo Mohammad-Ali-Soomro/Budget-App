@@ -478,23 +478,14 @@ class AuthService {
       // Store user in Hive with email as key
       await userBox.put(email, user);
 
-      // Create a separate user object for current_user to avoid Hive key conflict
-      final currentUser = UserModel(
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        phoneNumber: user.phoneNumber,
-        createdAt: user.createdAt,
-        updatedAt: user.updatedAt,
-      );
-
-      // Set as current user
-      await userBox.put('current_user', currentUser);
+      // Don't set as current user - require explicit login
+      // User must sign in separately after registration
 
       // Store hashed password securely with email-specific key
       await _storage.write(key: 'user_password_hash_$email', value: hashedPassword);
-      await _storage.write(key: 'user_email', value: email);
-      await _storage.write(key: 'user_password', value: password);
+      // Don't store current credentials - require explicit login
+      // await _storage.write(key: 'user_email', value: email);
+      // await _storage.write(key: 'user_password', value: password);
 
       debugPrint('Local user registered successfully: $email');
 

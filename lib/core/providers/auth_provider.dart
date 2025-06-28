@@ -103,14 +103,15 @@ class AuthController extends StateNotifier<AuthState> {
         phoneNumber: phoneNumber,
       );
 
-      // For local auth, result might be null but registration could still be successful
-      // Check if user is now logged in
-      final isLoggedIn = AuthService.isLoggedIn;
+      // Registration successful - but don't auto-login
+      // User must explicitly sign in after registration
+      if (result != null) {
+        // Sign out immediately after registration to ensure clean state
+        await AuthService.signOut();
 
-      if (result != null || isLoggedIn) {
         state = state.copyWith(
           isLoading: false,
-          isAuthenticated: true,
+          isAuthenticated: false, // Keep user logged out
         );
         return true;
       }

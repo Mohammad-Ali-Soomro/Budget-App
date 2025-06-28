@@ -34,13 +34,14 @@ class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
       recurringId: fields[14] as String?,
       location: fields[15] as String?,
       tags: (fields[16] as List?)?.cast<String>(),
+      userId: fields[17] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, TransactionModel obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -74,7 +75,9 @@ class TransactionModelAdapter extends TypeAdapter<TransactionModel> {
       ..writeByte(15)
       ..write(obj.location)
       ..writeByte(16)
-      ..write(obj.tags);
+      ..write(obj.tags)
+      ..writeByte(17)
+      ..write(obj.userId);
   }
 
   @override

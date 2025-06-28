@@ -107,14 +107,41 @@ class HiveService {
 
   // Initialize default data
   static Future<void> _initializeDefaultData() async {
+    // Check if we need to migrate data due to schema changes
+    await _migrateDataIfNeeded();
+
     // Initialize default categories if empty
     if (_categoryBox.isEmpty) {
       await _initializeDefaultCategories();
     }
 
-    // Initialize default accounts if empty
-    if (_accountBox.isEmpty) {
-      await _initializeDefaultAccounts();
+    // Don't initialize default accounts automatically
+    // They should be created per user when they first sign up
+  }
+
+  // Migrate data if schema has changed (added userId fields)
+  static Future<void> _migrateDataIfNeeded() async {
+    try {
+      // Check if we have a migration flag
+      final settingsBox = HiveService.settingsBox;
+      final hasUserIdMigration = settingsBox.get('userId_migration_completed', defaultValue: false);
+
+      if (!hasUserIdMigration) {
+        print('Performing userId migration - clearing existing data...');
+
+        // Clear existing data that doesn't have userId field
+        await _transactionBox.clear();
+        await _accountBox.clear();
+        await _budgetBox.clear();
+
+        // Mark migration as completed
+        await settingsBox.put('userId_migration_completed', true);
+
+        print('Migration completed successfully');
+      }
+    } catch (e) {
+      print('Error during migration: $e');
+      // Continue anyway - app should still work
     }
   }
 
@@ -207,45 +234,7 @@ class HiveService {
     }
   }
 
-  static Future<void> _initializeDefaultAccounts() async {
-    final defaultAccounts = [
-      AccountModel(
-        id: 'cash_wallet',
-        name: 'Cash Wallet',
-        type: AccountType.cash,
-        balance: 0.0,
-        currency: 'PKR',
-        isDefault: true,
-        createdAt: DateTime.now(),
-        color: 0xFF4CAF50,
-        icon: '💵',
-      ),
-      AccountModel(
-        id: 'bank_account',
-        name: 'Bank Account',
-        type: AccountType.bank,
-        balance: 0.0,
-        currency: 'PKR',
-        createdAt: DateTime.now(),
-        color: 0xFF2196F3,
-        icon: '🏦',
-      ),
-      AccountModel(
-        id: 'jazzcash',
-        name: 'JazzCash',
-        type: AccountType.mobileWallet,
-        balance: 0.0,
-        currency: 'PKR',
-        createdAt: DateTime.now(),
-        color: 0xFFFF9800,
-        icon: '📱',
-      ),
-    ];
 
-    for (final account in defaultAccounts) {
-      await _accountBox.put(account.id, account);
-    }
-  }
 
   // Close all boxes
   static Future<void> closeBoxes() async {

@@ -7,6 +7,7 @@ import '../../data/models/transaction_model.dart';
 import '../../../transactions/providers/transaction_providers.dart';
 import '../../../categories/providers/category_providers.dart';
 import '../../../accounts/providers/account_providers.dart';
+import '../../../../core/providers/app_providers.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   
@@ -453,12 +454,21 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     if (!_formKey.currentState!.validate()) return;
 
     try {
+      final currentUser = ref.read(currentUserProvider);
+      if (currentUser == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please sign in to add transactions')),
+        );
+        return;
+      }
+
       final transaction = createNewTransaction(
         amount: double.parse(_amountController.text),
         description: _descriptionController.text,
         type: _selectedType,
         categoryId: _selectedCategoryId!,
         accountId: _selectedAccountId!,
+        userId: currentUser.id,
         toAccountId: _selectedToAccountId,
         date: _selectedDate,
         notes: _notesController.text.isNotEmpty ? _notesController.text : null,

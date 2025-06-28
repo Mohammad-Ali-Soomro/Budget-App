@@ -2,26 +2,48 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/services/hive_service.dart';
+import '../../../core/providers/app_providers.dart';
 import '../data/models/budget_model.dart';
 import '../../transactions/providers/transaction_providers.dart';
 import '../../transactions/data/models/transaction_model.dart';
 
 // Budgets Provider
 final budgetsProvider = StateNotifierProvider<BudgetsNotifier, AsyncValue<List<BudgetModel>>>((ref) {
-  return BudgetsNotifier();
+  return BudgetsNotifier(ref);
 });
 
 class BudgetsNotifier extends StateNotifier<AsyncValue<List<BudgetModel>>> {
-  BudgetsNotifier() : super(const AsyncValue.loading()) {
+  final Ref _ref;
+
+  BudgetsNotifier(this._ref) : super(const AsyncValue.loading()) {
     _loadBudgets();
+
+    // Listen to current user changes and refresh data
+    _ref.listen(currentUserProvider, (previous, next) {
+      if (previous?.id != next?.id) {
+        _loadBudgets();
+      }
+    });
   }
 
   Future<void> _loadBudgets() async {
     try {
+      final currentUser = _ref.read(currentUserProvider);
+      if (currentUser == null) {
+        state = const AsyncValue.data([]);
+        return;
+      }
+
       final budgetBox = HiveService.budgetBox;
-      final budgets = budgetBox.values.toList();
-      budgets.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      state = AsyncValue.data(budgets);
+      final allBudgets = budgetBox.values.toList();
+
+      // Filter budgets by current user ID
+      final userBudgets = allBudgets
+          .where((budget) => budget.userId == currentUser.id)
+          .toList();
+
+      userBudgets.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      state = AsyncValue.data(userBudgets);
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
     }
@@ -29,8 +51,14 @@ class BudgetsNotifier extends StateNotifier<AsyncValue<List<BudgetModel>>> {
 
   Future<void> addBudget(BudgetModel budget) async {
     try {
+      final currentUser = _ref.read(currentUserProvider);
+      if (currentUser == null) return;
+
+      // Ensure budget has correct user ID
+      final userBudget = budget.copyWith(userId: currentUser.id);
+
       final budgetBox = HiveService.budgetBox;
-      await budgetBox.put(budget.id, budget);
+      await budgetBox.put(userBudget.id, userBudget);
       await _loadBudgets();
     } catch (error, stackTrace) {
       state = AsyncValue.error(error, stackTrace);
@@ -247,6 +275,7 @@ BudgetModel createNewBudget({
   required BudgetPeriod period,
   required DateTime startDate,
   required DateTime endDate,
+  required String userId,
   double alertThreshold = 0.8,
   String? description,
 }) {
@@ -261,6 +290,7 @@ BudgetModel createNewBudget({
     alertThreshold: alertThreshold,
     description: description,
     createdAt: DateTime.now(),
+    userId: userId,
   );
 }
 

@@ -38,6 +38,7 @@ class AccountModel extends HiveObject {
     this.color,
     this.icon,
     this.metadata,
+    required this.userId,
   });
 
   factory AccountModel.fromJson(Map<String, dynamic> json) {
@@ -61,6 +62,7 @@ class AccountModel extends HiveObject {
       color: json['color'],
       icon: json['icon'],
       metadata: json['metadata'],
+      userId: json['userId'] ?? '',
     );
   }
   @HiveField(0)
@@ -111,6 +113,9 @@ class AccountModel extends HiveObject {
   @HiveField(15)
   final Map<String, dynamic>? metadata;
 
+  @HiveField(16)
+  final String userId; // User ID for data isolation
+
   AccountModel copyWith({
     String? id,
     String? name,
@@ -128,6 +133,7 @@ class AccountModel extends HiveObject {
     int? color,
     String? icon,
     Map<String, dynamic>? metadata,
+    String? userId,
   }) {
     return AccountModel(
       id: id ?? this.id,
@@ -146,6 +152,7 @@ class AccountModel extends HiveObject {
       color: color ?? this.color,
       icon: icon ?? this.icon,
       metadata: metadata ?? this.metadata,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -167,6 +174,7 @@ class AccountModel extends HiveObject {
       'color': color,
       'icon': icon,
       'metadata': metadata,
+      'userId': userId,
     };
   }
 

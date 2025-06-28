@@ -52,13 +52,13 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Account created successfully!'),
+            content: Text('Account created successfully! Please sign in to continue.'),
             backgroundColor: Colors.green,
-            duration: Duration(seconds: 2),
+            duration: Duration(seconds: 3),
           ),
         );
-        // Navigate to dashboard
-        context.go('/dashboard');
+        // Navigate to login screen instead of dashboard
+        context.go('/login');
       } else if (mounted) {
         // Error will be displayed in the UI automatically
         // Optionally scroll to show the error

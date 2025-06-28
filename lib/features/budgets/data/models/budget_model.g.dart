@@ -32,13 +32,14 @@ class BudgetModelAdapter extends TypeAdapter<BudgetModel> {
       updatedAt: fields[12] as DateTime?,
       description: fields[13] as String?,
       metadata: (fields[14] as Map?)?.cast<String, dynamic>(),
+      userId: fields[15] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, BudgetModel obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -68,7 +69,9 @@ class BudgetModelAdapter extends TypeAdapter<BudgetModel> {
       ..writeByte(13)
       ..write(obj.description)
       ..writeByte(14)
-      ..write(obj.metadata);
+      ..write(obj.metadata)
+      ..writeByte(15)
+      ..write(obj.userId);
   }
 
   @override

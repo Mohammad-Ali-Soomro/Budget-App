@@ -33,13 +33,14 @@ class AccountModelAdapter extends TypeAdapter<AccountModel> {
       color: fields[13] as int?,
       icon: fields[14] as String?,
       metadata: (fields[15] as Map?)?.cast<String, dynamic>(),
+      userId: fields[16] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, AccountModel obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -71,7 +72,9 @@ class AccountModelAdapter extends TypeAdapter<AccountModel> {
       ..writeByte(14)
       ..write(obj.icon)
       ..writeByte(15)
-      ..write(obj.metadata);
+      ..write(obj.metadata)
+      ..writeByte(16)
+      ..write(obj.userId);
   }
 
   @override
