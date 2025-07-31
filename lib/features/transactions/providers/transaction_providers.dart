@@ -3,6 +3,7 @@ import 'package:uuid/uuid.dart';
 
 import '../../../core/services/hive_service.dart';
 import '../../../core/providers/app_providers.dart';
+import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/refresh_provider.dart';
 import '../data/models/transaction_model.dart';
 import '../../accounts/providers/account_providers.dart';
@@ -19,9 +20,12 @@ class TransactionsNotifier extends StateNotifier<AsyncValue<List<TransactionMode
   TransactionsNotifier(this._ref) : super(const AsyncValue.loading()) {
     _loadTransactions();
 
-    // Listen to current user changes and refresh data
-    _ref.listen(currentUserProvider, (previous, next) {
+    // Listen to local user changes and refresh data
+    _ref.listen(localUserProvider, (previous, next) {
       if (previous?.id != next?.id) {
+        print('*** USER CHANGED - REFRESHING TRANSACTIONS ***');
+        print('Previous user: ${previous?.email}');
+        print('New user: ${next?.email}');
         _loadTransactions();
       }
     });
@@ -29,11 +33,15 @@ class TransactionsNotifier extends StateNotifier<AsyncValue<List<TransactionMode
 
   Future<void> _loadTransactions() async {
     try {
-      final currentUser = _ref.read(currentUserProvider);
+      final currentUser = _ref.read(localUserProvider);
       if (currentUser == null) {
+        print('No current user - returning empty transactions');
         state = const AsyncValue.data([]);
         return;
       }
+      
+      print('Loading transactions for user: ${currentUser.email} (ID: ${currentUser.id})');
+      
 
       final transactionBox = HiveService.transactionBox;
       final allTransactions = transactionBox.values.toList();
@@ -65,9 +73,14 @@ class TransactionsNotifier extends StateNotifier<AsyncValue<List<TransactionMode
 
   Future<void> addTransaction(TransactionModel transaction) async {
     try {
-      final currentUser = _ref.read(currentUserProvider);
-      if (currentUser == null) return;
+      final currentUser = _ref.read(localUserProvider);
+      if (currentUser == null) {
+        print('No current user - cannot add transaction');
+        return;
+      }
 
+      print('Adding transaction for user: ${currentUser.email} (ID: ${currentUser.id})');
+      
       // Ensure transaction has correct user ID
       final userTransaction = transaction.copyWith(userId: currentUser.id);
 

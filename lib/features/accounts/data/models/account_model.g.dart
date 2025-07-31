@@ -17,23 +17,23 @@ class AccountModelAdapter extends TypeAdapter<AccountModel> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AccountModel(
-      id: fields[0] as String,
-      name: fields[1] as String,
-      type: fields[2] as AccountType,
-      balance: fields[3] as double,
-      currency: fields[4] as String,
+      id: fields[0] as String? ?? '',
+      name: fields[1] as String? ?? 'Unknown Account',
+      type: fields[2] as AccountType? ?? AccountType.cash,
+      balance: fields[3] as double? ?? 0.0,
+      currency: fields[4] as String? ?? 'PKR',
       description: fields[5] as String?,
       bankName: fields[6] as String?,
       accountNumber: fields[7] as String?,
       cardNumber: fields[8] as String?,
-      isDefault: fields[9] as bool,
-      isActive: fields[10] as bool,
-      createdAt: fields[11] as DateTime,
+      isDefault: fields[9] as bool? ?? false,
+      isActive: fields[10] as bool? ?? true,
+      createdAt: fields[11] as DateTime? ?? DateTime.now(),
       updatedAt: fields[12] as DateTime?,
       color: fields[13] as int?,
       icon: fields[14] as String?,
       metadata: (fields[15] as Map?)?.cast<String, dynamic>(),
-      userId: fields[16] as String,
+      userId: fields[16] as String? ?? '',
     );
   }
 

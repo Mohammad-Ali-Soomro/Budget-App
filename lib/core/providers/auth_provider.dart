@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_profile.dart';
 import '../services/auth_service.dart';
@@ -21,17 +22,52 @@ final currentUserProvider = Provider<User?>((ref) {
 });
 
 // Local user provider for when Firebase User is not available
-final localUserProvider = Provider<UserModel?>((ref) {
-  try {
-    final userBox = HiveService.userBox;
-    if (userBox.containsKey('current_user')) {
-      return userBox.get('current_user');
-    }
-    return null;
-  } catch (e) {
-    return null;
-  }
+final localUserProvider = StateNotifierProvider<LocalUserNotifier, UserModel?>((ref) {
+  return LocalUserNotifier();
 });
+
+class LocalUserNotifier extends StateNotifier<UserModel?> {
+  LocalUserNotifier() : super(null) {
+    _loadCurrentUser();
+  }
+  
+  Future<void> _loadCurrentUser() async {
+    try {
+      final userBox = HiveService.userBox;
+      state = userBox.get('current_user');
+      debugPrint('LocalUserNotifier loaded user: ${state?.email}');
+    } catch (e) {
+      state = null;
+      debugPrint('LocalUserNotifier error: $e');
+    }
+  }
+  
+  Future<void> setUser(UserModel user) async {
+    try {
+      final userBox = HiveService.userBox;
+      await userBox.put('current_user', user);
+      state = user;
+      debugPrint('LocalUserNotifier set user: ${user.email}');
+    } catch (e) {
+      debugPrint('LocalUserNotifier setUser error: $e');
+    }
+  }
+  
+  Future<void> clearUser() async {
+    try {
+      final userBox = HiveService.userBox;
+      await userBox.delete('current_user');
+      state = null;
+      debugPrint('LocalUserNotifier cleared user');
+    } catch (e) {
+      debugPrint('LocalUserNotifier clearUser error: $e');
+    }
+  }
+  
+  void refresh() {
+    _loadCurrentUser();
+  }
+}
 
 // User profile provider
 final userProfileProvider = FutureProvider<UserProfile?>((ref) async {
@@ -80,9 +116,11 @@ class AuthController extends StateNotifier<AuthState> {
   void _checkAuthState() {
     try {
       final isLoggedIn = AuthService.isLoggedIn;
-      state = state.copyWith(isAuthenticated: isLoggedIn);
+      state = state.copyWith(isAuthenticated: isLoggedIn, error: null);
+      debugPrint('Auth state checked: isLoggedIn=$isLoggedIn');
     } catch (e) {
       state = state.copyWith(isAuthenticated: false, error: 'Failed to check auth state');
+      debugPrint('Auth state check failed: $e');
     }
   }
 

@@ -126,8 +126,13 @@ class CurrentUserNotifier extends StateNotifier<UserModel?> {
 
   Future<void> clearUser() async {
     final userBox = HiveService.userBox;
-    await userBox.clear();
+    await userBox.delete('current_user');
     state = null;
+  }
+
+  Future<void> refresh() async {
+    await _loadCurrentUser();
+    print('Refreshed current user: ${state?.email}');
   }
 }
 

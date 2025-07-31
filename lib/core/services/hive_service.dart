@@ -107,6 +107,9 @@ class HiveService {
 
   // Initialize default data
   static Future<void> _initializeDefaultData() async {
+    // FORCE CLEAR ALL DATA TO FIX USER ISOLATION ISSUES
+    await _forceClearAllData();
+    
     // Check if we need to migrate data due to schema changes
     await _migrateDataIfNeeded();
 
@@ -125,23 +128,36 @@ class HiveService {
       // Check if we have a migration flag
       final settingsBox = HiveService.settingsBox;
       final hasUserIdMigration = settingsBox.get('userId_migration_completed', defaultValue: false);
+      final hasNullSafetyMigration = settingsBox.get('null_safety_migration_completed', defaultValue: false);
 
-      if (!hasUserIdMigration) {
-        print('Performing userId migration - clearing existing data...');
+      if (!hasUserIdMigration || !hasNullSafetyMigration) {
+        print('Performing data migration - clearing existing data to prevent null errors...');
 
-        // Clear existing data that doesn't have userId field
+        // Clear existing data that doesn't have userId field or has null safety issues
         await _transactionBox.clear();
         await _accountBox.clear();
         await _budgetBox.clear();
+        await _goalBox.clear();
+        await _reminderBox.clear();
 
         // Mark migration as completed
         await settingsBox.put('userId_migration_completed', true);
+        await settingsBox.put('null_safety_migration_completed', true);
 
         print('Migration completed successfully');
       }
     } catch (e) {
       print('Error during migration: $e');
-      // Continue anyway - app should still work
+      // If migration fails, try to clear all data to start fresh
+      try {
+        await clearAllData();
+        final settingsBox = HiveService.settingsBox;
+        await settingsBox.put('userId_migration_completed', true);
+        await settingsBox.put('null_safety_migration_completed', true);
+        print('Cleared all data due to migration error');
+      } catch (clearError) {
+        print('Error clearing data: $clearError');
+      }
     }
   }
 
@@ -258,5 +274,36 @@ class HiveService {
     await _budgetBox.clear();
     await _goalBox.clear();
     await _reminderBox.clear();
+  }
+
+  // Force clear all data to fix user isolation issues
+  static Future<void> _forceClearAllData() async {
+    try {
+      // Check if we need to force clear (only do this once)
+      final settingsBox = HiveService.settingsBox;
+      final hasForceCleared = settingsBox.get('force_cleared_v1', defaultValue: false);
+      
+      if (!hasForceCleared) {
+        print('FORCE CLEARING ALL DATA TO FIX USER ISOLATION ISSUES...');
+        
+        // Clear ALL data completely
+        await _settingsBox.clear();
+        await _userBox.clear();
+        await _transactionBox.clear();
+        await _categoryBox.clear();
+        await _accountBox.clear();
+        await _budgetBox.clear();
+        await _goalBox.clear();
+        await _reminderBox.clear();
+        
+        // Mark as force cleared
+        await settingsBox.put('force_cleared_v1', true);
+        
+        print('FORCE CLEAR COMPLETED - ALL DATA RESET');
+      }
+    } catch (e) {
+      print('Error during force clear: $e');
+      // Continue anyway
+    }
   }
 }

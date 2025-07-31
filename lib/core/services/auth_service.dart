@@ -291,10 +291,13 @@ class AuthService {
 
     try {
       if (_useLocalAuth) {
-        // Local sign out
+        // Local sign out - clear current user data
         final userBox = HiveService.userBox;
         await userBox.delete('current_user');
         debugPrint('Cleared current_user from local storage');
+        
+        // Clear user-specific data from other boxes
+        await _clearUserSpecificData();
       } else if (_auth != null) {
         await _auth!.signOut();
         debugPrint('Signed out from Firebase');
@@ -304,18 +307,6 @@ class AuthService {
       await _storage.delete(key: 'user_email');
       await _storage.delete(key: 'user_password');
       debugPrint('Cleared stored credentials');
-
-      // Clear all password hashes (for current session only)
-      try {
-        final userBox = HiveService.userBox;
-        final allUsers = userBox.values.toList();
-        for (final user in allUsers) {
-          await _storage.delete(key: 'user_password_hash_${user.email}');
-        }
-        debugPrint('Cleared password hashes');
-      } catch (e) {
-        debugPrint('Error clearing password hashes: $e');
-      }
 
       debugPrint('Sign out completed successfully');
     } catch (e) {
@@ -559,6 +550,8 @@ class AuthService {
       await userBox.put('current_user', currentUser);
 
       debugPrint('Local user signed in successfully: $email');
+      debugPrint('Current user set to: ${currentUser.email} with ID: ${currentUser.id}');
+      debugPrint('*** USER LOGIN SUCCESSFUL - NEW USER SHOULD BE ACTIVE ***');
 
       // Return a mock UserCredential for compatibility
       return _createMockUserCredential(user);
@@ -574,5 +567,84 @@ class AuthService {
     // This is because creating a proper mock UserCredential is complex
     // and not necessary for local authentication
     return null;
+  }
+
+  // Clear user-specific data when signing out
+  static Future<void> _clearUserSpecificData() async {
+    try {
+      // Get current user to determine which data to clear
+      final userBox = HiveService.userBox;
+      final currentUserModel = userBox.get('current_user');
+      
+      if (currentUserModel != null) {
+        final userId = currentUserModel.id;
+        debugPrint('Clearing data for user: $userId');
+        
+        // Clear user-specific data from all boxes
+        final transactionBox = HiveService.transactionBox;
+        final accountBox = HiveService.accountBox;
+        final budgetBox = HiveService.budgetBox;
+        final goalBox = HiveService.goalBox;
+        final reminderBox = HiveService.reminderBox;
+        
+        // Remove transactions for this user
+        final transactionsToRemove = <String>[];
+        for (final entry in transactionBox.toMap().entries) {
+          if (entry.value.userId == userId) {
+            transactionsToRemove.add(entry.key);
+          }
+        }
+        for (final key in transactionsToRemove) {
+          await transactionBox.delete(key);
+        }
+        
+        // Remove accounts for this user
+        final accountsToRemove = <String>[];
+        for (final entry in accountBox.toMap().entries) {
+          if (entry.value.userId == userId) {
+            accountsToRemove.add(entry.key);
+          }
+        }
+        for (final key in accountsToRemove) {
+          await accountBox.delete(key);
+        }
+        
+        // Remove budgets for this user
+        final budgetsToRemove = <String>[];
+        for (final entry in budgetBox.toMap().entries) {
+          if (entry.value.userId == userId) {
+            budgetsToRemove.add(entry.key);
+          }
+        }
+        for (final key in budgetsToRemove) {
+          await budgetBox.delete(key);
+        }
+        
+        // Note: Goals and Reminders don't have userId field yet
+        // For now, we'll clear all goals and reminders when any user signs out
+        // This will be fixed when userId is added to these models
+        await goalBox.clear();
+        await reminderBox.clear();
+        debugPrint('Cleared all goals and reminders (no userId field yet)');
+        
+        // TODO: Once GoalModel and ReminderModel have userId fields, 
+        // implement selective clearing like other models
+        
+        debugPrint('Cleared user-specific data for user: $userId');
+      }
+    } catch (e) {
+      debugPrint('Error clearing user-specific data: $e');
+      // Don't throw error, just log it
+    }
+  }
+
+  // Get current local user
+  static UserModel? getCurrentLocalUser() {
+    try {
+      final userBox = HiveService.userBox;
+      return userBox.get('current_user');
+    } catch (e) {
+      return null;
+    }
   }
 }
