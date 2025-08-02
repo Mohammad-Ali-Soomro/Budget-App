@@ -124,6 +124,21 @@ class AuthController extends StateNotifier<AuthState> {
     }
   }
 
+  // Clear authentication state
+  Future<void> _clearAuthState() async {
+    try {
+      // Clear current user session through AuthService
+      await AuthService.signOut();
+
+      // Update auth controller state
+      state = state.copyWith(isAuthenticated: false, error: null);
+
+      debugPrint('Auth state cleared');
+    } catch (e) {
+      debugPrint('Error clearing auth state: $e');
+    }
+  }
+
   // Register
   Future<bool> register({
     required String email,
@@ -134,6 +149,9 @@ class AuthController extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
+      // Ensure clean state before registration
+      await _clearAuthState();
+
       final result = await AuthService.registerWithEmailPassword(
         email: email,
         password: password,
@@ -144,8 +162,8 @@ class AuthController extends StateNotifier<AuthState> {
       // Registration successful - but don't auto-login
       // User must explicitly sign in after registration
       if (result != null) {
-        // Sign out immediately after registration to ensure clean state
-        await AuthService.signOut();
+        // Ensure user is not logged in after registration
+        await _clearAuthState();
 
         state = state.copyWith(
           isLoading: false,
@@ -177,6 +195,9 @@ class AuthController extends StateNotifier<AuthState> {
     state = state.copyWith(isLoading: true, error: null);
 
     try {
+      // Clear any existing session before sign-in
+      await _clearAuthState();
+
       final result = await AuthService.signInWithEmailPassword(
         email: email,
         password: password,
@@ -191,6 +212,7 @@ class AuthController extends StateNotifier<AuthState> {
           isLoading: false,
           isAuthenticated: true,
         );
+        debugPrint('Sign-in successful for: $email');
         return true;
       }
 

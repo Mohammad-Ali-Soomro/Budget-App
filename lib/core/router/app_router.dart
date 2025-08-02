@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/auth_provider.dart';
-import '../services/auth_service.dart';
 import '../../features/auth/presentation/screens/login_screen.dart';
 import '../../features/auth/presentation/screens/register_screen.dart';
 import '../../features/auth/presentation/screens/forgot_password_screen.dart';
@@ -18,7 +17,6 @@ import '../../features/settings/presentation/screens/settings_screen.dart';
 import '../../features/settings/presentation/screens/profile_screen.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
   final authController = ref.watch(authControllerProvider);
 
   // Listen to auth state changes to trigger router refresh
@@ -29,16 +27,8 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/splash',
     redirect: (context, state) {
-      // Check both Firebase auth and local auth
-      final isFirebaseLoggedIn = authState.when(
-        data: (user) => user != null,
-        loading: () => false,
-        error: (_, __) => false,
-      );
-
-      // Also check local authentication state
-      final isLocalLoggedIn = AuthService.isLoggedIn;
-      final isLoggedIn = isFirebaseLoggedIn || isLocalLoggedIn || authController.isAuthenticated;
+      // Use only the primary auth controller for consistency
+      final isLoggedIn = authController.isAuthenticated;
 
       final isOnAuthPage = state.matchedLocation.startsWith('/login') ||
           state.matchedLocation.startsWith('/register') ||
@@ -46,6 +36,17 @@ final appRouterProvider = Provider<GoRouter>((ref) {
 
       final isOnSplashOrOnboarding = state.matchedLocation == '/splash' ||
           state.matchedLocation == '/onboarding';
+
+      // Prevent navigation to splash during auth flows
+      // Only allow splash on app startup (when coming from initial location)
+      if (state.matchedLocation == '/splash' && state.uri.toString() != '/splash') {
+        // If trying to navigate to splash from another page, redirect appropriately
+        if (isLoggedIn) {
+          return '/dashboard';
+        } else {
+          return '/login';
+        }
+      }
 
       // If user is logged in and on auth page, redirect to dashboard
       if (isLoggedIn && isOnAuthPage) {

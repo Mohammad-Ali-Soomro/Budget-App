@@ -126,6 +126,9 @@ class AuthService {
   }) async {
     _initializeServices();
 
+    // Clear any existing user session before registration
+    await _clearCurrentUserSession();
+
     if (_useLocalAuth) {
       // Use local authentication with Hive
       return _registerLocalUser(
@@ -158,9 +161,8 @@ class AuthService {
         // Update display name
         await credential.user!.updateDisplayName(fullName);
 
-        // Store credentials for biometric auth
-        await _storage.write(key: 'user_email', value: email);
-        await _storage.write(key: 'user_password', value: password);
+        // Don't store credentials or set as current user during registration
+        // User must explicitly sign in after registration
       }
 
       return credential;
@@ -175,6 +177,9 @@ class AuthService {
     required String password,
   }) async {
     _initializeServices();
+
+    // Clear any existing user session before sign-in
+    await _clearCurrentUserSession();
 
     if (_useLocalAuth) {
       // Use local authentication with Hive
@@ -567,6 +572,23 @@ class AuthService {
     // This is because creating a proper mock UserCredential is complex
     // and not necessary for local authentication
     return null;
+  }
+
+  // Clear current user session without affecting stored user accounts
+  static Future<void> _clearCurrentUserSession() async {
+    try {
+      final userBox = HiveService.userBox;
+      await userBox.delete('current_user');
+
+      // Clear stored credentials
+      await _storage.delete(key: 'user_email');
+      await _storage.delete(key: 'user_password');
+
+      debugPrint('Cleared current user session');
+    } catch (e) {
+      debugPrint('Error clearing current user session: $e');
+      // Don't throw error, just log it
+    }
   }
 
   // Clear user-specific data when signing out

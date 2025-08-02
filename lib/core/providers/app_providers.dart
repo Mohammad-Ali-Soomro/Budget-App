@@ -82,7 +82,9 @@ class AuthStateNotifier extends StateNotifier<bool> {
 
   Future<void> _checkAuthState() async {
     final userBox = HiveService.userBox;
-    state = userBox.isNotEmpty;
+    // Check specifically for current_user, not just if box is not empty
+    final currentUser = userBox.get('current_user');
+    state = currentUser != null;
   }
 
   Future<void> signIn(UserModel user) async {
@@ -93,7 +95,8 @@ class AuthStateNotifier extends StateNotifier<bool> {
 
   Future<void> signOut() async {
     final userBox = HiveService.userBox;
-    await userBox.clear();
+    // Only clear current_user, not all users
+    await userBox.delete('current_user');
     state = false;
   }
 
